@@ -1,5 +1,8 @@
 => react-hook-form
-=>firebase
+=> firebase
 => toastify
-=>axios
-=>
+=> axios
+=> sweetalert2
+=> react-leaflet@next leaflet
+=> tanstack query
+=> 

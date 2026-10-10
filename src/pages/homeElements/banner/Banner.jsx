@@ -1,3 +1,4 @@
+import { NavLink } from "react-router";
 import vid from "../../../assets/heroanim.mp4";
 
 const Banner = () => {
@@ -36,9 +37,9 @@ const Banner = () => {
                             Find Parking
                         </button>
 
-                        <button className="rounded-lg border border-white px-7 py-3 font-semibold transition hover:bg-white hover:text-black">
-                            Become a Partner
-                        </button>
+                       <NavLink to="becomePartner" className="rounded-xl border border-amber-500 px-7 py-3 font-semibold transition hover:bg-amber-500 text-white"
+                       > Become a Partner</NavLink>
+                       
                     </div>
                 </div>
             </div>

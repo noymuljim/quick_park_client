@@ -1,18 +1,35 @@
 import { toast } from "react-toastify";
 import useAuth from "../../../Hooks/useAuth";
 import { useLocation, useNavigate } from "react-router";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const SocialLogin = () => {
     const navigate=useNavigate();
     const location= useLocation();
+    const axiosSecure=useAxiosSecure();
+
+    
 
        const { GoogleLogin } = useAuth();
         const handleGoogleSignIn=()=>{
             GoogleLogin()
             .then(result=>{
                 console.log(result.user)
+               
+
+                 const userInfo={
+                   email: result.user.email,
+                    displayName: result.user.displayName,
+                    photoURL: result.user.photoURL
+                 }
+                
+                axiosSecure.post('/users', userInfo)
+                    .then(res => {
+                        console.log('user data stored', res.data)
                  toast.success("Registration successful! 🎉");
-                 navigate(location?.state || "/")
+
+                          navigate(location?.state || '/');
+                    })
             })
             .catch(error => {
                 console.log(error)

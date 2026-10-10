@@ -5,10 +5,13 @@ import useAuth from "../../../Hooks/useAuth";
 import SocialLogin from "../SocialLogin/SocialLogin";
 import { toast } from "react-toastify";
 import axios from "axios";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const Registration = () => {
+
     const { register, handleSubmit, formState: { errors } } = useForm();
 
+    const axiosSecure = useAxiosSecure()
 
     const { registerUser, updateUserProfile } = useAuth()
     const handleRegistration = (data) => {
@@ -18,7 +21,7 @@ const Registration = () => {
         registerUser(data.email, data.password)
             .then(result => {
                 console.log(result.user);
-                toast.success("Registration successful! 🎉");
+                toast.success("Registration successful! Please login");
 
 
                 const formData = new FormData();
@@ -26,11 +29,25 @@ const Registration = () => {
                 const imgAiPIurl = `https://api.imgbb.com/1/upload?expiration=600&key=${import.meta.env.VITE_image_host_key}`
                 axios.post(imgAiPIurl, formData)
                     .then(res => {
+                        const photoURL = res.data.data.url;
+
+                        const userInfo = {
+                            email: data.email,
+                            displayName: data.userName,
+                            photoURL: photoURL
+                        }
+
+                        axiosSecure.post('/users',userInfo)
+                        .then(res=>{
+                            if(res.data.insertedId){
+                                 console.log('user created in db')
+                            }
+                        })
                         console.log('after img upld', res.data.data.url)
 
                         const userProfile = {
-                            displayName: data.name,
-                            photoURL: res.data.data.url
+                            displayName: data.userName,
+                            photoURL: photoURL
                         }
                         updateUserProfile(userProfile)
                             .then(() => {
@@ -79,12 +96,12 @@ const Registration = () => {
                                 User name
                             </label>
 
-                            <input {...register('username', { required: true })}
+                            <input {...register('userName', { required: true })}
                                 type="text"
                                 placeholder="Enter your name"
                                 className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white outline-none placeholder:text-gray-400 transition focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20"
                             />
-                            {errors.username?.type === 'required' &&
+                            {errors.userName?.type === 'required' &&
                                 <p className='text-red-500'>User name is required</p>}
                         </div>
                         {/* photo */}
@@ -102,8 +119,8 @@ const Registration = () => {
     hover:file:bg-orange-300
     focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20"
                             />
-                            {errors.username?.type === 'required' &&
-                                <p className='text-red-500'>User name is required</p>}
+                            {errors.photo?.type === 'required' &&
+                                <p className='text-red-500'>Photo is required</p>}
                         </div>
                         {/* Email */}
                         <div>
@@ -128,7 +145,8 @@ const Registration = () => {
                                 </label>
                             </div>
 
-                            <input {...register('password', {
+                            <input type="password"
+                             {...register('password', {
                                 required: true, minLength: 6,
                                 pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/
 
@@ -167,7 +185,7 @@ const Registration = () => {
                     <p className="mt-7 text-center text-sm text-gray-300">
                         Already have an account?{" "}
                         <Link state={location.state}
-                        to="/login" className="font-semibold text-orange-400 hover:text-orange-300">Login</Link>
+                            to="/login" className="font-semibold text-orange-400 hover:text-orange-300">Login</Link>
                     </p>
 
                 </div>
