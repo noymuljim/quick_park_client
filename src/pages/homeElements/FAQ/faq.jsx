@@ -90,8 +90,8 @@ const FAQ = () => {
                         onClick={() => changeTab("general")}
                         className={`rounded-full px-6 py-2.5 text-sm font-medium transition ${
                             activeTab === "general"
-                                ? "bg-orange-400 text-black"
-                                : "border border-gray-600 text-gray-300 hover:border-orange-400"
+                                ? "bg-orange-400 text-secondary"
+                                : "border border-gray-600 text-secondary hover:border-orange-400"
                         }`}
                     >
                         General Questions
@@ -101,8 +101,8 @@ const FAQ = () => {
                         onClick={() => changeTab("partners")}
                         className={`rounded-full px-6 py-2.5 text-sm font-medium transition ${
                             activeTab === "partners"
-                                ? "bg-orange-400 text-black"
-                                : "border border-gray-600 text-gray-300 hover:border-orange-400"
+                                ? "bg-orange-400 text-secondary"
+                                : "border border-gray-600 text-secondary hover:border-orange-400"
                         }`}
                     >
                         Partner Questions
@@ -125,7 +125,7 @@ const FAQ = () => {
                                     }
                                     className="flex w-full items-center justify-between gap-5 py-6 text-left"
                                 >
-                                    <span className="text-base font-semibold text-white md:text-lg">
+                                    <span className="text-base font-semibold text-secondary md:text-lg">
                                         {item.question}
                                     </span>
 
@@ -139,7 +139,7 @@ const FAQ = () => {
                                 </button>
 
                                 {isOpen && (
-                                    <p className="pb-6 pr-10 text-sm leading-7 text-gray-400 md:text-base">
+                                    <p className="pb-6 pr-10 text-sm leading-7 text-secondary md:text-base">
                                         {item.answer}
                                     </p>
                                 )}

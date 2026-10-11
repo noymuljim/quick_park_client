@@ -26,7 +26,9 @@ const SocialLogin = () => {
                 axiosSecure.post('/users', userInfo)
                     .then(res => {
                         console.log('user data stored', res.data)
-                 toast.success("Registration successful! 🎉");
+                 toast.success("Registration successful! 🎉",{
+                    position:"bottom-right"
+                 });
 
                           navigate(location?.state || '/');
                     })

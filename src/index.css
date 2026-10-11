@@ -4,8 +4,30 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
 
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  color-scheme: light;
+
+  --color-primary: #f59e0b;   
+  --color-secondary: #000000; 
+}
+
+@plugin "daisyui/theme" {
+  name: "dark";
+  prefersdark: true;
+  color-scheme: dark;
+
+  --color-primary: #f59e0b;  
+  --color-secondary: #ffffff;
+}
 body{
     font-family: "Mulish", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
 }
+

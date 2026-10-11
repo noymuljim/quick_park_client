@@ -7,7 +7,7 @@ import { RiAdminFill } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { FaRegHandshake } from "react-icons/fa";
 
-const UsersManagement = () => {
+const ManageAdmin = () => {
     const axiosSecure = useAxiosSecure();
 
     const { data: users = [], refetch, isLoading } = useQuery({
@@ -22,7 +22,7 @@ const UsersManagement = () => {
 
     const handleManageAdmin = (user, role) => {
         const roleInfo = { role: role }
-        axiosSecure.patch(`/users/${user._id}`, roleInfo)
+        axiosSecure.patch(`/users/${user._id}/role`, roleInfo)
             .then(res => {
                 console.log(res.data)
                 if (res.data.modifiedCount) {
@@ -88,7 +88,7 @@ const UsersManagement = () => {
                     </div>
 
                     {/* partner */}
-                    <div className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-lg">
+                    <div className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-green-200 hover:shadow-lg">
                         <div>
                             <p className="text-sm font-medium text-slate-500">
                                 All Partners
@@ -266,4 +266,4 @@ const UsersManagement = () => {
     );
 };
 
-export default UsersManagement;
+export default ManageAdmin;

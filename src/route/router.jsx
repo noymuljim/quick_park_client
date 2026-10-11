@@ -7,8 +7,12 @@ import Registration from "../pages/Auth/Registration/registration";
 import formLayout from "../layout/formLayout";
 import PrivateRoute from "./PrivateRoute";
 import PartnerForm from "../pages/partnerForm/partnerForm";
-import UserManagement from "../pages/Dashboard/UserManagement/userManagement";
 import DashboardLayout from "../layout/dashboardLayout";
+import AdminRoute from "./AdminRoute";
+import DashboardHome from "../pages/Dashboard/DashboardHome/DashboardHome";
+import PartnersApplication from "../pages/Dashboard/PartnersApplication/PartnersApplication";
+import ManageMyApply from "../pages/Dashboard/ManageMyApply/ManageMyApply";
+import ManageAdmin from "../pages/Dashboard/ManageAdmin/ManageAdmin";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -54,7 +58,19 @@ export const router = createBrowserRouter([
   children:[
       {
         index: true,
-        Component: UserManagement
+        Component:DashboardHome,
+      },
+      {
+        path:'manageAdmin',
+        element: <AdminRoute><ManageAdmin></ManageAdmin></AdminRoute>
+      },
+      {
+        path:'PartnersApplication',
+        element:<AdminRoute><PartnersApplication></PartnersApplication></AdminRoute>
+      },
+      {
+        path:'ManageMyApply',
+        Component: ManageMyApply
       }
   ]
  }

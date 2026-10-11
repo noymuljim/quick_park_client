@@ -21,7 +21,9 @@ const Registration = () => {
         registerUser(data.email, data.password)
             .then(result => {
                 console.log(result.user);
-                toast.success("Registration successful! Please login");
+                toast.success("Registration successful! Please login", {
+                    position: "bottom-right",
+                });
 
 
                 const formData = new FormData();
@@ -37,12 +39,12 @@ const Registration = () => {
                             photoURL: photoURL
                         }
 
-                        axiosSecure.post('/users',userInfo)
-                        .then(res=>{
-                            if(res.data.insertedId){
-                                 console.log('user created in db')
-                            }
-                        })
+                        axiosSecure.post('/users', userInfo)
+                            .then(res => {
+                                if (res.data.insertedId) {
+                                    console.log('user created in db')
+                                }
+                            })
                         console.log('after img upld', res.data.data.url)
 
                         const userProfile = {
@@ -146,11 +148,11 @@ const Registration = () => {
                             </div>
 
                             <input type="password"
-                             {...register('password', {
-                                required: true, minLength: 6,
-                                pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/
+                                {...register('password', {
+                                    required: true, minLength: 6,
+                                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/
 
-                            })}
+                                })}
                                 placeholder="Enter your password"
                                 className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white outline-none placeholder:text-gray-400 transition focus:border-orange-400 focus:ring-2 focus:ring-orange-400/20"
                             />

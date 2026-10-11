@@ -1,7 +1,13 @@
-import { FaUserFriends } from "react-icons/fa";
-import { Outlet } from "react-router";
+import { NavLink, Outlet } from "react-router";
+import useRole from "../Hooks/useRole";
+import { MdVerifiedUser } from "react-icons/md";
+import { FaRegHandshake } from "react-icons/fa";
+import { FaUserPen } from "react-icons/fa6";
+
 
 const DashboardLayout = () => {
+    const { role } = useRole();
+
     return (
         <div className="drawer lg:drawer-open">
             <input id="my-drawer-4" type="checkbox" className="drawer-toggle inline" />
@@ -14,8 +20,8 @@ const DashboardLayout = () => {
                     </label>
                     <div className="px-4">Navbar Title</div>
                 </nav>
-                     {/* Page content here */}
-               <Outlet></Outlet>
+                {/* Page content here */}
+                <Outlet></Outlet>
             </div>
 
             <div className="drawer-side is-drawer-close:overflow-visible">
@@ -31,13 +37,38 @@ const DashboardLayout = () => {
                                 <span className="is-drawer-close:hidden">Homepage</span>
                             </button>
                         </li>
-                        <li>
-                            <button className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Homepage">
-                               <FaUserFriends />
-                               
-                                <span className="is-drawer-close:hidden">User Management</span>
-                            </button>
-                        </li>
+                        
+                        {
+                            (role === "partner" || role === "user") && <>
+                                <li>
+                                    <NavLink to="/dashboard/ManageMyApply"
+                                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Manage my apply">
+                                    <FaUserPen />
+                                    <span className="is-drawer-close:hidden">Manage my apply</span>
+                                </NavLink>
+                                </li>
+                            </>
+                        }
+
+                        {
+                            role === "admin" && <>
+                                <li>
+                                    <NavLink to="/dashboard/manageAdmin"
+                                        className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Manage admin">
+                                         <MdVerifiedUser /> 
+                                        <span className="is-drawer-close:hidden">Manage admin</span>
+                                    </NavLink>
+                                </li>
+
+                                <li>
+                                    <NavLink to="/dashboard/PartnersApplication"
+                                        className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Manage admin">
+                                        <FaRegHandshake />
+                                        <span className="is-drawer-close:hidden">Partners application</span>
+                                    </NavLink>
+                                </li>
+                            </>
+                        }
 
                         {/* List item */}
                         <li>

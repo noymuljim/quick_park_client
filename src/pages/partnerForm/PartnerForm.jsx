@@ -262,7 +262,7 @@ const PartnerForm = () => {
 
     return (
 
-        <div className="min-h-screen bg-gray-50 py-12">
+        <div className="min-h-screen py-12">
 
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
@@ -270,11 +270,11 @@ const PartnerForm = () => {
 
                 <div className="mb-10 text-center">
 
-                    <h1 className="text-3xl font-bold text-gray-900 md:text-4xl">
+                    <h1 className="text-3xl font-bold text-secondary md:text-4xl">
                         List Your Parking Lot
                     </h1>
 
-                    <p className="mx-auto mt-3 max-w-2xl text-gray-500">
+                    <p className="mx-auto mt-3 max-w-2xl text-primary">
                         Turn your available parking space into a profitable
                         opportunity by partnering with Quick Park.
                     </p>
