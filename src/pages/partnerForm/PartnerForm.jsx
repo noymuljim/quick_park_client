@@ -3,16 +3,10 @@ import useAuth from "../../Hooks/useAuth";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import { useLoaderData } from "react-router";
 import Swal from "sweetalert2";
-import {
-    MapContainer,
-    Marker,
-    Popup,
-    TileLayer,
-    useMap,
-    useMapEvents,
-} from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
+
 
 
 const LocationMarker = ({ position, setPosition }) => {
@@ -184,6 +178,7 @@ const PartnerForm = () => {
 
 
     const handlePartner = (data) => {
+       
 
         if (!position) {
 
@@ -210,6 +205,7 @@ const PartnerForm = () => {
             longitude: position[1],
         };
 
+      
 
         console.log("Partner Data:", partnerData);
 
@@ -222,7 +218,7 @@ const PartnerForm = () => {
             .then((res) => {
 
                 console.log(res.data);
-
+               
 
                 if (res.data.insertedId) {
 
@@ -646,7 +642,7 @@ const PartnerForm = () => {
 
 
 
-
+                                {/* Parking Lot Photo */}
                                 <div className="md:col-span-2">
 
                                     <label className="mb-2 block text-sm font-medium text-gray-700">

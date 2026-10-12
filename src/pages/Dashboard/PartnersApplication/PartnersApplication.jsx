@@ -1,10 +1,33 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { FiUsers, FiClock, FiCheckCircle, FiXCircle, FiMail, FiPhone, FiEye, FiCalendar } from "react-icons/fi";
+import {FiUsers,FiClock,FiCheckCircle,FiXCircle,FiMail,FiPhone,FiEye,FiCalendar,FiUser,FiMapPin,FiDollarSign,FiCreditCard} from "react-icons/fi";
 import { FaRegHandshake } from "react-icons/fa";
-import { NavLink } from "react-router";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Loading from "../../../components/Loading/Loading";
+import { useRef, useState } from "react";
+
+const formatDate = (value) => {
+    if (!value) return "—";
+
+    return new Date(value).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
+};
+
+const InfoItem = ({ icon: Icon, label, value }) => (
+    <div className="rounded-xl border border-base-300 bg-base-100 p-4">
+        <div className="mb-2 flex items-center gap-2 text-sm text-base-content/60">
+            {Icon && <Icon className="text-primary" size={16} />}
+            <span>{label}</span>
+        </div>
+
+        <p className="text-base font-semibold text-base-content">
+            {value ?? "—"}
+        </p>
+    </div>
+);
 
 const PartnersApplication = () => {
     const axiosSecure = useAxiosSecure();
@@ -64,6 +87,15 @@ const PartnersApplication = () => {
         rejected: "bg-error/10 text-error",
         pending: "bg-warning/10 text-warning",
     };
+   
+    const [selectedPartner, setSelectedPartner] = useState(null)
+    const partnerModalRef = useRef();
+    const openPartnersInfoModal = (partner) => {
+        setSelectedPartner(partner)
+        partnerModalRef.current?.showModal()
+    }
+
+
 
     return (
         <div className="min-h-screen bg-base-100 p-4 text-base-content transition-colors duration-300 md:p-8">
@@ -155,19 +187,19 @@ const PartnersApplication = () => {
 
                             <tbody className="divide-y divide-base-300">
 
-                               
+
                                 {isLoading ? (
                                     <tr>
                                         <td
                                             colSpan={6}
                                             className="px-6 py-12 text-center text-base-content/60"
                                         >
-                                         <Loading></Loading>
+                                            <Loading></Loading>
                                         </td>
                                     </tr>
                                 ) : isError ? (
 
-                                   
+
                                     <tr>
                                         <td
                                             colSpan={6}
@@ -253,13 +285,13 @@ const PartnersApplication = () => {
 
                                             {/* Action */}
                                             <td className="px-6 py-5 text-center">
-                                                <NavLink
-                                                    // to="/"
+                                                <button onClick={() => openPartnersInfoModal(partner)}
                                                     className="btn btn-sm rounded-full border border-primary/30 bg-primary/10 text-base-content transition hover:border-primary hover:bg-primary hover:text-black"
                                                 >
                                                     <FiEye size={17} />
                                                     View
-                                                </NavLink>
+                                                </button>
+
                                             </td>
                                         </tr>
                                     ))
@@ -291,7 +323,213 @@ const PartnersApplication = () => {
                     </div>
                 </div>
             </div>
+
+            {/* modal */}
+            <dialog ref={partnerModalRef}
+                className="modal modal-bottom sm:modal-middle">
+                <div className="modal-box w-11/12 max-w-3xl rounded-2xl p-0">
+                    {selectedPartner && (
+                        <>
+                            {/* Modal Header */}
+                            <div className="flex items-center justify-between border-b border-base-300 p-6">
+                                <div>
+                                    <h3 className="text-2xl font-bold text-base-content">
+                                        Partner Application Details
+                                    </h3>
+
+                                    <p className="mt-1 text-sm text-base-content/60">
+                                        Complete information about this application
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        partnerModalRef.current?.close()
+                                    }
+                                    className="btn btn-circle btn-ghost btn-sm text-red-500"
+                                    aria-label="Close modal"
+                                >
+                                    X
+                                </button>
+                            </div>
+
+                            {/* Modal Content */}
+                            <div className="max-h-[70vh] space-y-6 overflow-y-auto p-6">
+
+                                {/* Lot Photo and Name */}
+                                <section className="overflow-hidden rounded-xl border border-base-300">
+                                    {selectedPartner.lotPhoto ? (
+                                        <img
+                                            src={selectedPartner.lotPhoto}
+                                            alt={
+                                                selectedPartner.lotName ||
+                                                "Partner lot"
+                                            }
+                                            className="h-56 w-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="flex h-40 items-center justify-center bg-base-200 text-base-content/50">
+                                            No lot photo available
+                                        </div>
+                                    )}
+
+                                    <div className="flex flex-wrap items-center justify-between gap-3 p-4">
+                                        <div>
+                                            <h4 className="text-xl font-bold">
+                                                {selectedPartner.lotName ||
+                                                    "Unnamed Lot"}
+                                            </h4>
+
+                                            <p className="mt-1 text-sm text-base-content/60">
+                                                Parking Lot Information
+                                            </p>
+                                        </div>
+
+                                        <span
+                                            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize ${
+                                                statusStyle[
+                                                    selectedPartner.status
+                                                ] ||
+                                                "bg-base-200 text-base-content"
+                                            }`}
+                                        >
+                                            {selectedPartner.status || "Unknown"}
+                                        </span>
+                                    </div>
+                                </section>
+
+                                {/* Personal Information */}
+                                <section>
+                                    <h4 className="mb-4 flex items-center gap-2 text-lg font-semibold">
+                                        <FiUser className="text-primary" />
+                                        Personal Information
+                                    </h4>
+
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <InfoItem
+                                            icon={FiUser}
+                                            label="Full Name"
+                                            value={selectedPartner.name}
+                                        />
+
+                                        <InfoItem
+                                            icon={FiMail}
+                                            label="Email Address"
+                                            value={selectedPartner.email}
+                                        />
+
+                                        <InfoItem
+                                            icon={FiPhone}
+                                            label="Phone Number"
+                                            value={selectedPartner.phone}
+                                        />
+
+                                        <InfoItem
+                                            icon={FiCreditCard}
+                                            label="National ID (NID)"
+                                            value={selectedPartner.nid}
+                                        />
+                                    </div>
+                                </section>
+
+                                {/* Location Information */}
+                                <section>
+                                    <h4 className="mb-4 flex items-center gap-2 text-lg font-semibold">
+                                        <FiMapPin className="text-primary" />
+                                        Lot Location
+                                    </h4>
+
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <InfoItem
+                                            icon={FiMapPin}
+                                            label="Region"
+                                            value={selectedPartner.region}
+                                        />
+
+                                        <InfoItem
+                                            icon={FiMapPin}
+                                            label="District"
+                                            value={selectedPartner.district}
+                                        />
+                                    </div>
+                                </section>
+
+                                {/* Pricing Information */}
+                                <section>
+                                    <h4 className="mb-4 flex items-center gap-2 text-lg font-semibold">
+                                        <FiDollarSign className="text-primary" />
+                                        Hourly Pricing
+                                    </h4>
+
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <div className="rounded-xl border border-base-300 p-4">
+                                            <p className="text-sm text-base-content/60">
+                                                Car Parking
+                                            </p>
+
+                                            <p className="mt-2 text-2xl font-bold text-primary">
+                                                ৳
+                                                {selectedPartner.hourlyPrice_Car ??
+                                                    "—"}
+                                                <span className="ml-1 text-sm font-normal text-base-content/60">
+                                                    / hour
+                                                </span>
+                                            </p>
+                                        </div>
+
+                                        <div className="rounded-xl border border-base-300 p-4">
+                                            <p className="text-sm text-base-content/60">
+                                                Motorcycle Parking
+                                            </p>
+
+                                            <p className="mt-2 text-2xl font-bold text-primary">
+                                                ৳
+                                                {selectedPartner.hourlyPrice_Motorcycle ??
+                                                    "—"}
+                                                <span className="ml-1 text-sm font-normal text-base-content/60">
+                                                    / hour
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {/* Application Information */}
+                                <section>
+                                    <h4 className="mb-4 flex items-center gap-2 text-lg font-semibold">
+                                        <FiCalendar className="text-primary" />
+                                        Application Information
+                                    </h4>
+
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <InfoItem
+                                            icon={FiCalendar}
+                                            label="Applied On"
+                                            value={formatDate(
+                                                selectedPartner.createdAt
+                                            )}
+                                        />
+
+                                        <InfoItem
+                                            icon={FiCheckCircle}
+                                            label="Application Status"
+                                            value={selectedPartner.status}
+                                        />
+                                    </div>
+                                </section>
+                            </div>
+
+                           <div>
+
+                           </div>
+                        </>
+                    )}
+                </div>
+            </dialog>
         </div>
+
+
     );
 };
 
