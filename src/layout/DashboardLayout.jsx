@@ -1,82 +1,149 @@
+
 import { NavLink, Outlet } from "react-router";
 import useRole from "../Hooks/useRole";
+import L from "../assets/logo.png"
 import { MdVerifiedUser } from "react-icons/md";
 import { FaRegHandshake } from "react-icons/fa";
-import { FaUserPen } from "react-icons/fa6";
-
+import { FaArrowsLeftRight, FaUserPen } from "react-icons/fa6";
+import { FiHome, FiSettings } from "react-icons/fi";
 
 const DashboardLayout = () => {
     const { role } = useRole();
 
+    const linkStyle = ({ isActive }) =>
+        `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200
+        ${
+            isActive
+                ? "bg-primary text-black"
+                : "text-base-content/70 hover:bg-primary/10 hover:text-primary"
+        }`;
+
     return (
-        <div className="drawer lg:drawer-open">
-            <input id="my-drawer-4" type="checkbox" className="drawer-toggle inline" />
+        <div className="drawer lg:drawer-open min-h-screen bg-base-100">
+            <input
+                id="my-drawer-4"
+                type="checkbox"
+                className="drawer-toggle"
+            />
+
+            {/* Main content */}
             <div className="drawer-content">
-                {/* Navbar */}
-                <nav className="navbar w-full bg-base-300">
-                    <label htmlFor="my-drawer-4" aria-label="open sidebar" className="btn btn-square btn-ghost drawer-button">
-                        {/* Sidebar toggle icon */}
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor" className="my-1.5 inline-block size-4"><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path><path d="M9 4v16"></path><path d="M14 10l2 2l-2 2"></path></svg>
+                <nav className="navbar sticky top-0 z-30 min-h-16 border-b border-base-300 bg-base-100 px-4 sm:px-6">
+                    <label
+                        htmlFor="my-drawer-4"
+                        aria-label="open sidebar"
+                        className="btn btn-square btn-ghost rounded-xl text-xl"
+                    >
+                      <FaArrowsLeftRight />
                     </label>
-                    <div className="px-4">Navbar Title</div>
+
+                    <div className="ml-3 text-lg font-extrabold tracking-tight">
+                        Dashboard
+                        <span className="ml-1 text-primary">.</span>
+                    </div>
                 </nav>
-                {/* Page content here */}
-                <Outlet></Outlet>
+
+                {/* Page content */}
+                <div className="p-4 sm:p-6 lg:p-8">
+                    <Outlet />
+                </div>
             </div>
 
+            {/* Sidebar - original drawer system preserved */}
             <div className="drawer-side is-drawer-close:overflow-visible">
-                <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
-                <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
-                    {/* Sidebar content here */}
-                    <ul className="menu w-full grow">
-                        {/* List item */}
+                <label
+                    htmlFor="my-drawer-4"
+                    aria-label="close sidebar"
+                    className="drawer-overlay"
+                />
+
+                <div className="flex min-h-full flex-col items-start border-r border-base-300 bg-base-100 is-drawer-close:w-16 is-drawer-open:w-64">
+
+                    {/* Sidebar title */}
+                    <div className="flex h-16 w-full items-center gap-3 border-b border-base-300 px-4">
+                        <div className=" size-9 shrink-0 bg-white rounded-xl">
+                           <img src={L} alt="" />
+                        </div>
+
+                        <span className="text-lg font-extrabold is-drawer-close:hidden">
+                            Quick<span className="text-primary pl-1">P</span>ark
+                        </span>
+                    </div>
+
+                    <ul className="menu w-full grow gap-2 p-3">
+                        {/* Homepage */}
                         <li>
-                            <button className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Homepage">
-                                {/* Home icon */}
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor" className="my-1.5 inline-block size-4"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-                                <span className="is-drawer-close:hidden">Homepage</span>
-                            </button>
+                            <NavLink
+                                to="/"
+                                end
+                                className={linkStyle}
+                                data-tip="Homepage"
+                            >
+                                <FiHome className="shrink-0 text-lg" />
+                                <span className="is-drawer-close:hidden">
+                                    Homepage
+                                </span>
+                            </NavLink>
                         </li>
-                        
-                        {
-                            (role === "partner" || role === "user") && <>
-                                <li>
-                                    <NavLink to="/dashboard/ManageMyApply"
-                                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Manage my apply">
-                                    <FaUserPen />
-                                    <span className="is-drawer-close:hidden">Manage my apply</span>
+
+                        {/* User and partner */}
+                        {(role === "partner" || role === "user") && (
+                            <li>
+                                <NavLink to="/dashboard/ManageMyApply"
+                                    className={linkStyle}
+                                    data-tip="Manage my apply"
+                                >
+                                    <FaUserPen className="shrink-0 text-lg" />
+                                    <span className="is-drawer-close:hidden">
+                                        Manage my apply
+                                    </span>
                                 </NavLink>
-                                </li>
-                            </>
-                        }
+                            </li>
+                        )}
 
-                        {
-                            role === "admin" && <>
+                        {/* Admin */}
+                        {role === "admin" && (
+                            <>
                                 <li>
-                                    <NavLink to="/dashboard/manageAdmin"
-                                        className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Manage admin">
-                                         <MdVerifiedUser /> 
-                                        <span className="is-drawer-close:hidden">Manage admin</span>
+                                    <NavLink
+                                        to="/dashboard/manageAdmin"
+                                        className={linkStyle}
+                                        data-tip="Manage admin"
+                                    >
+                                        <MdVerifiedUser className="shrink-0 text-lg" />
+                                        <span className="is-drawer-close:hidden">
+                                            Manage admin
+                                        </span>
                                     </NavLink>
                                 </li>
 
                                 <li>
-                                    <NavLink to="/dashboard/PartnersApplication"
-                                        className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Manage admin">
-                                        <FaRegHandshake />
-                                        <span className="is-drawer-close:hidden">Partners application</span>
+                                    <NavLink
+                                        to="/dashboard/PartnersApplication"
+                                        className={linkStyle}
+                                        data-tip="Partners application"
+                                    >
+                                        <FaRegHandshake className="shrink-0 text-lg" />
+                                        <span className="is-drawer-close:hidden">
+                                            Partners application
+                                        </span>
                                     </NavLink>
                                 </li>
                             </>
-                        }
+                        )}
 
-                        {/* List item */}
+                        {/* Settings */}
                         <li>
-                            <button className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Settings">
-                                {/* Settings icon */}
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor" className="my-1.5 inline-block size-4"><path d="M20 7h-9"></path><path d="M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg>
-                                <span className="is-drawer-close:hidden">Settings</span>
-                            </button>
+                            <NavLink
+                                to="/dashboard/settings"
+                                className={linkStyle}
+                                data-tip="Settings"
+                            >
+                                <FiSettings className="shrink-0 text-lg" />
+                                <span className="is-drawer-close:hidden">
+                                    Settings
+                                </span>
+                            </NavLink>
                         </li>
                     </ul>
                 </div>
