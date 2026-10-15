@@ -31,3 +31,9 @@ body{
   font-style: normal;
 }
 
+
+.swal2-container.swal-above-modal {
+  z-index: 99999 !important;
+  position: absolute !important;
+}
+
