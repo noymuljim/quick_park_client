@@ -613,14 +613,14 @@ const PartnersApplication = () => {
                                         </div>
                                     </div>
                                 </section>
-                                <section>
+                                <section className="space-x-1 flex justify-end">
 
                                     <button onClick={() => handleApproval(selectedPartner)}
-                                        className='btn btn-sm'><FaUserCheck /> Approve
+                                        className='btn btn-sm rounded-2xl bg-primary'><FaUserCheck /> Approve
                                     </button>
 
                                     <button onClick={() => handleRejection(selectedPartner)}
-                                        className='btn btn-sm'><FaRegTrashAlt /> Reject
+                                        className='btn btn-sm rounded-2xl bg-error'><FaRegTrashAlt /> Reject
                                     </button>
                                 </section>
                             </div>

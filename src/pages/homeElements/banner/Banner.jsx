@@ -37,7 +37,7 @@ const Banner = () => {
                             Find Parking
                         </button>
 
-                       <NavLink to="becomePartner" className="rounded-xl border border-amber-500 px-7 py-3 font-semibold transition hover:bg-amber-500 text-white"
+                       <NavLink to="/becomePartner" className="rounded-xl border border-amber-500 px-7 py-3 font-semibold transition hover:bg-amber-500 text-white"
                        > Become a Partner</NavLink>
                        
                     </div>

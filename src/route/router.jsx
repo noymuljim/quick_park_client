@@ -13,6 +13,9 @@ import DashboardHome from "../pages/Dashboard/DashboardHome/DashboardHome";
 import PartnersApplication from "../pages/Dashboard/PartnersApplication/PartnersApplication";
 import ManageMyApply from "../pages/Dashboard/ManageMyApply/ManageMyApply";
 import ManageAdmin from "../pages/Dashboard/ManageAdmin/ManageAdmin";
+import BookNow from "../pages/BookNow/BookNow";
+
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -45,10 +48,14 @@ export const router = createBrowserRouter([
     Component:formLayout,
     children:[
       {
-        path:'becomePartner',
+        path:'/becomePartner',
         element:<PrivateRoute><PartnerForm /> </PrivateRoute>,
          loader: () => fetch('/serviceCenters.json').then(res => res.json())
 
+      },
+      {
+        path:'/bookNow',
+        element:<PrivateRoute><BookNow></BookNow></PrivateRoute>
       }
     ]
   },

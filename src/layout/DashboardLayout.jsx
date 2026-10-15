@@ -5,7 +5,7 @@ import L from "../assets/logo.png"
 import { MdVerifiedUser } from "react-icons/md";
 import { FaRegHandshake } from "react-icons/fa";
 import { FaArrowsLeftRight, FaUserPen } from "react-icons/fa6";
-import { FiHome, FiSettings } from "react-icons/fi";
+import { FiHome } from "react-icons/fi";
 
 const DashboardLayout = () => {
     const { role } = useRole();
@@ -132,19 +132,8 @@ const DashboardLayout = () => {
                             </>
                         )}
 
-                        {/* Settings */}
-                        <li>
-                            <NavLink
-                                to="/dashboard/settings"
-                                className={linkStyle}
-                                data-tip="Settings"
-                            >
-                                <FiSettings className="shrink-0 text-lg" />
-                                <span className="is-drawer-close:hidden">
-                                    Settings
-                                </span>
-                            </NavLink>
-                        </li>
+                       
+                      
                     </ul>
                 </div>
             </div>

@@ -12,8 +12,9 @@ const home = () => {
         <div>
             <Banner></Banner>
             <ParkingSlider></ParkingSlider>
+             <FindParking />
             <div className="max-w-7xl mx-auto">
-                <FindParking />
+               
                 <HowWorks />
                 <MobileApp/>
                 <Reviews reviewsPromise={reviewsPromise}></Reviews>
