@@ -105,7 +105,7 @@ const BookNow = () => {
                             href={`https://www.google.com/maps?q=${lot.latitude},${lot.longitude}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-2 text-sm font-semibold border rounded-2xl p-2 bg-orange-200 text-orange-700 animate-pulse"
+                            className="inline-flex items-center gap-2 text-sm font-semibold border rounded-2xl p-2 bg-green-200 text-green-700 animate-pulse"
                         >
                             <FiMapPin size={16} />
                             Open in Google Maps
@@ -113,14 +113,14 @@ const BookNow = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-base-200 p-4 rounded-xl">
+                        <div className="bg-gradient-to-br from-base-200 via-amber-500/10 to-orange-500/20 p-5 rounded-xl space-y-2 border border-base-300 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
                             <p>Car</p>
                             <p className="text-xl font-bold">
                                 ৳{lot.hourlyPrice_Car}/hour
                             </p>
                         </div>
 
-                        <div className="bg-base-200 p-4 rounded-xl">
+                        <div className="bg-gradient-to-br from-base-200 via-amber-500/10 to-orange-500/20 p-5 rounded-xl space-y-2 border border-base-300 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
                             <p>Motorcycle</p>
                             <p className="text-xl font-bold">
                                 ৳{lot.hourlyPrice_Motorcycle}/hour
@@ -137,29 +137,28 @@ const BookNow = () => {
                             <option value="Car">Car</option>
                             <option value="Motorcycle">Motorcycle</option>
                         </select>
-                         {errors.vehicle?.type === 'required' &&
-                                <p className='text-red-500'>Select one</p>}
+                        {errors.vehicle?.type === 'required' &&
+                            <p className='text-red-500'>Select one</p>}
                     </div>
 
 
-{/* ----------time */}
-                    <div>
+                    {/* ----------time */}
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                     <div>                       
                         <label className="label">Start Date & Time</label>
                         <input
                             type="datetime-local"
                             {...register("startTime", {
-                                required: "Please select a start time.",
+                                required: true,
                                 validate: (value) =>
                                     value >= now || "Start time cannot be in the past.",
                             })}
                             min={now}
                             className="input input-bordered w-full"
                         />
-                        {errors.startTime && (
-                            <p className="text-error text-sm mt-1">
-                                {errors.startTime.message}
-                            </p>
-                        )}
+                        {errors.startTime?.type === 'required' &&
+                            <p className='text-red-500'>Select one</p>}
+
                     </div>
 
                     <div>
@@ -167,7 +166,7 @@ const BookNow = () => {
                         <input
                             type="datetime-local"
                             {...register("endTime", {
-                                required: "Please select an end time.",
+                                required: true,
                                 validate: (value) =>
                                     !startTime ||
                                     new Date(value) > new Date(startTime) ||
@@ -176,14 +175,12 @@ const BookNow = () => {
                             min={startTime || now}
                             className="input input-bordered w-full"
                         />
-                        {errors.endTime && (
-                            <p className="text-error text-sm mt-1">
-                                {errors.endTime.message}
-                            </p>
-                        )}
+                        {errors.endTime?.type === 'required' &&
+                            <p className='text-red-500'>Select one</p>}
                     </div>
+                   </div>
 
-                    <div className="bg-base-200 p-5 rounded-xl space-y-2">
+                    <div className="bg-gradient-to-br from-base-200 via-amber-500/10 to-orange-500/20 p-5 rounded-xl space-y-2 border border-base-300 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
                         <div className="flex justify-between">
                             <span>Duration</span>
                             <span>{hours} hour(s)</span>
