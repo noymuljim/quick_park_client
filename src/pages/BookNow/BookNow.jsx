@@ -64,6 +64,7 @@ const BookNow = () => {
             lotName: lot.lotName,
             vehicle: data.vehicle,
             V_number: data.V_number,
+            V_type:data.vehicle,
             startTime: data.startTime,
             endTime: data.endTime,
             location: lot.district,
