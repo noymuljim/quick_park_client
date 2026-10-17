@@ -36,3 +36,12 @@ body{
   z-index: 99999 !important;
   position: absolute !important;
 }
+
+@keyframes moveHorizontal {
+  0%, 100% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}

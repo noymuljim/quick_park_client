@@ -2,10 +2,11 @@
 import { NavLink, Outlet } from "react-router";
 import useRole from "../Hooks/useRole";
 import L from "../assets/logo.png"
-import { MdVerifiedUser } from "react-icons/md";
+import { MdBookmarkAdded, MdVerifiedUser } from "react-icons/md";
 import { FaRegHandshake } from "react-icons/fa";
 import { FaArrowsLeftRight, FaUserPen } from "react-icons/fa6";
 import { FiHome } from "react-icons/fi";
+import { RiFolderHistoryFill } from "react-icons/ri";
 
 const DashboardLayout = () => {
     const { role } = useRole();
@@ -99,6 +100,35 @@ const DashboardLayout = () => {
                                     </span>
                                 </NavLink>
                             </li>
+                        )}
+                        {/* User */}
+                        {(role === "user") && ( <>
+                        <li>
+                                <NavLink to="/dashboard/ManageMyBooking"
+                                    className={linkStyle}
+                                    data-tip="manage my booking"
+                                >
+                                    <MdBookmarkAdded className="shrink-0 text-lg" />
+                                    <span className="is-drawer-close:hidden">
+                                    Manage my booking
+                                    </span>
+                                </NavLink>                             
+                            </li>
+                        <li>
+                                <NavLink to="/dashboard/MyBookingHistory"
+                                    className={linkStyle}
+                                    data-tip="my booking history"
+                                >
+                                    <RiFolderHistoryFill  className="shrink-0 text-lg" />
+                                    <span className="is-drawer-close:hidden">
+                                    My booking history
+                                    </span>
+                                </NavLink>
+                               
+                             
+                            </li>
+                        </>
+                            
                         )}
 
                         {/* Admin */}
