@@ -5,8 +5,10 @@ import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Loading from "../../components/Loading/Loading";
 import { FiMapPin } from "react-icons/fi";
 import { useForm } from "react-hook-form";
+import useAuth from "../../Hooks/useAuth";
 
 const BookNow = () => {
+    const { user } = useAuth()
     const [searchParams] = useSearchParams();
     const id = searchParams.get("id");
     const axiosSecure = useAxiosSecure();
@@ -27,26 +29,31 @@ const BookNow = () => {
 
     const lot = lots.find((item) => item._id === id);
 
-    const hourlyRate = Number(
+
+
+    // Calculate price per minute
+    const pricePerMinute = Number(
         vehicle === "Car"
-            ? lot?.hourlyPrice_Car
-            : lot?.hourlyPrice_Motorcycle
+            ? lot?.price_Car
+            : lot?.price_Motorcycle
     ) || 0;
 
-    const hours =
+    // Calculate total minutes
+    const totalMinutes =
         startTime && endTime && new Date(endTime) > new Date(startTime)
             ? Math.ceil(
-                (new Date(endTime) - new Date(startTime)) / 3600000
+                (new Date(endTime) - new Date(startTime)) / 60000
             )
             : 0;
-
-    const totalPrice = hours * hourlyRate;
+    const duration = `${Math.floor(totalMinutes / 60)} h ${totalMinutes % 60} min`;
+    // Calculate total price
+    const totalPrice = totalMinutes * pricePerMinute;
 
     if (isLoading) return <Loading />;
 
 
 
-    const handleBooking = (data) => {
+    const handleBooking = async (data) => {
         if (new Date(data.endTime) <= new Date(data.startTime)) {
             alert("End time must be after start time.");
             return;
@@ -56,15 +63,20 @@ const BookNow = () => {
             lotId: lot._id,
             lotName: lot.lotName,
             vehicle: data.vehicle,
+            V_number: data.V_number,
             startTime: data.startTime,
             endTime: data.endTime,
-            hours,
-            hourlyRate,
+            location: lot.district,
+            totalMinutes,
+            pricePerMinute,
             totalPrice,
+            user_email: user?.email
         };
 
-        console.log(bookingData);
-        // Send bookingData to your booking API here.
+     
+       
+        const res = await axiosSecure.post("/create-checkout-session",bookingData);
+        window.location.href = res.data.url;
     };
 
     const now = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -116,79 +128,90 @@ const BookNow = () => {
                         <div className="bg-gradient-to-br from-base-200 via-amber-500/10 to-orange-500/20 p-5 rounded-xl space-y-2 border border-base-300 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
                             <p>Car</p>
                             <p className="text-xl font-bold">
-                                ৳{lot.hourlyPrice_Car}/hour
+                                ৳{lot.price_Car} / <span className="text-sm">min</span>
                             </p>
                         </div>
 
                         <div className="bg-gradient-to-br from-base-200 via-amber-500/10 to-orange-500/20 p-5 rounded-xl space-y-2 border border-base-300 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
                             <p>Motorcycle</p>
                             <p className="text-xl font-bold">
-                                ৳{lot.hourlyPrice_Motorcycle}/hour
+                                ৳{lot.price_Motorcycle} /<span className="text-sm">min</span>
                             </p>
                         </div>
                     </div>
 
-                    <div>
-                        <label className="label">Select Vehicle</label>
-                        <select
-                            {...register("vehicle", { required: true })}
-                            className="select select-bordered w-full"
-                        >
-                            <option value="Car">Car</option>
-                            <option value="Motorcycle">Motorcycle</option>
-                        </select>
-                        {errors.vehicle?.type === 'required' &&
-                            <p className='text-red-500'>Select one</p>}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="label">Select Vehicle</label>
+                            <select
+                                {...register("vehicle", { required: true })}
+                                className="select select-bordered w-full"
+                            >
+                                <option value="Car">Car</option>
+                                <option value="Motorcycle">Motorcycle</option>
+                            </select>
+                            {errors.vehicle?.type === 'required' &&
+                                <p className='text-red-500'>Select one</p>}
+                        </div>
+                        <div>
+                            <label className="label">Vehicle's number plate</label>
+                            <input {...register('V_number', { required: true })}
+                                type="text"
+                                placeholder="Enter your Vegicle's number"
+                                className="select select-bordered w-full"
+                            />
+                            {errors.V_number?.type === 'required' &&
+                                <p className='text-red-500'>Vehicle number is required</p>}
+                        </div>
                     </div>
 
 
                     {/* ----------time */}
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                     <div>                       
-                        <label className="label">Start Date & Time</label>
-                        <input
-                            type="datetime-local"
-                            {...register("startTime", {
-                                required: true,
-                                validate: (value) =>
-                                    value >= now || "Start time cannot be in the past.",
-                            })}
-                            min={now}
-                            className="input input-bordered w-full"
-                        />
-                        {errors.startTime?.type === 'required' &&
-                            <p className='text-red-500'>Select one</p>}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="label">Start Date & Time</label>
+                            <input
+                                type="datetime-local"
+                                {...register("startTime", {
+                                    required: true,
 
-                    </div>
+                                })}
+                                min={now}
+                                className="input input-bordered w-full"
+                            />
+                            {errors.startTime?.type === 'required' &&
+                                <p className='text-red-500'>Select one</p>}
 
-                    <div>
-                        <label className="label">End Date & Time</label>
-                        <input
-                            type="datetime-local"
-                            {...register("endTime", {
-                                required: true,
-                                validate: (value) =>
-                                    !startTime ||
-                                    new Date(value) > new Date(startTime) ||
-                                    "End time must be after start time.",
-                            })}
-                            min={startTime || now}
-                            className="input input-bordered w-full"
-                        />
-                        {errors.endTime?.type === 'required' &&
-                            <p className='text-red-500'>Select one</p>}
+                        </div>
+
+                        <div>
+                            <label className="label">End Date & Time</label>
+                            <input
+                                type="datetime-local"
+                                {...register("endTime", {
+                                    required: true,
+                                    validate: (value) =>
+                                        !startTime ||
+                                        new Date(value) > new Date(startTime) ||
+                                        "End time must be after start time.",
+                                })}
+                                min={startTime || now}
+                                className="input input-bordered w-full"
+                            />
+                            {errors.endTime?.type === 'required' &&
+                                <p className='text-red-500'>Select one</p>}
+                        </div>
                     </div>
-                   </div>
 
                     <div className="bg-gradient-to-br from-base-200 via-amber-500/10 to-orange-500/20 p-5 rounded-xl space-y-2 border border-base-300 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10">
                         <div className="flex justify-between">
                             <span>Duration</span>
-                            <span>{hours} hour(s)</span>
+                            <span>{duration}</span>
                         </div>
 
                         <div className="flex justify-between">
-                            <span>Hourly rate</span>
-                            <span>৳{hourlyRate}</span>
+                            <span>For {vehicle} rate per min</span>
+                            <span>৳{pricePerMinute}</span>
                         </div>
 
                         <div className="divider my-1"></div>
@@ -198,12 +221,12 @@ const BookNow = () => {
                             <span>৳{totalPrice}</span>
                         </div>
                     </div>
-
+                    {/* pay--------------- */}
                     <button
                         type="submit"
                         className="btn btn-primary w-full rounded-xl"
                     >
-                        Proceed to Payment
+                        Book & pay
                     </button>
                 </div>
             </form>

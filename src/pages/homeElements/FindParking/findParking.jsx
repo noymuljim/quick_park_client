@@ -88,20 +88,20 @@ const FindParking = () => {
                                         <div className="rounded-lg bg-orange-50 p-2">
                                             <div className="flex items-center gap-1 text-xs text-gray-500">
                                                 <FaCar />
-                                                Car / hour
+                                                Car / min
                                             </div>
                                             <p className="mt-1 font-bold text-primary">
-                                                ৳{lot.hourlyPrice_Car}
+                                                ৳{lot.price_Car}
                                             </p>
                                         </div>
 
                                         <div className="rounded-lg bg-blue-50 p-2">
                                             <div className="flex items-center gap-1 text-xs text-gray-500">
                                                 <MdDirectionsBike />
-                                                Bike / hour
+                                                Bike / min
                                             </div>
                                             <p className="mt-1 font-bold text-blue-600">
-                                                ৳{lot.hourlyPrice_Motorcycle}
+                                                ৳{lot.price_Motorcycle}
                                             </p>
                                         </div>
                                     </div>

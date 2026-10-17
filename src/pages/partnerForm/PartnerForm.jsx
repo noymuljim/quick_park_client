@@ -74,7 +74,8 @@ const PartnerForm = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState([])
     const [searching, setSearching] = useState(false);
-    const [flyTarget, setFlyTarget] = useState(null)
+    const [flyTarget, setFlyTarget] = useState(null);
+
 
     const handleSearch = async () => {
         const q = searchQuery.trim();
@@ -124,8 +125,9 @@ const PartnerForm = () => {
         setSearchQuery(place.display_name);
     };
 
-
+    const [loading, setLoading] = useState(false);
     const handlePartner = async (data) => {
+        setLoading(true);
         if (!position) {
             Swal.fire({
                 icon: "warning",
@@ -173,7 +175,6 @@ const PartnerForm = () => {
                         lotPhoto: photoURL,
                         latitude: position[0],
                         longitude: position[1],
-
                     };
                     axiosSecure.post("/partners", partnerData)
                         .then((res) => {
@@ -192,6 +193,7 @@ const PartnerForm = () => {
                                         title: "text-2xl font-bold",
                                     },
                                 });
+                                setLoading(false);
                             }
                         })
                 }
@@ -876,97 +878,74 @@ const PartnerForm = () => {
 
 
 
-                        {/* Car Hourly Pricing */}
-
+                        {/* Car min Pricing */}
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-
+                            {/* Car Pricing */}
                             <div>
-
                                 <h2 className="mb-2 font-bold text-base-content">
-
-                                    Car (Hourly Pricing)
-
+                                    Car (Per Minute Pricing)
                                 </h2>
 
-
-
                                 <div className="relative">
-
                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 font-medium text-base-content/60">
-
                                         ৳
-
                                     </span>
-
-
 
                                     <input
-
-                                        {...register("hourlyPrice_Car", {
-
+                                        {...register("price_Car", {
                                             required: true,
-
                                             valueAsNumber: true,
-
-                                            min: 60,
-
+                                            min: 1,
                                         })}
-
                                         type="number"
-
-                                        min="60"
-
-                                        placeholder="e.g. 60"
-
+                                        min="1"
+                                        placeholder="e.g. 2"
                                         className="w-full rounded-xl border border-base-300 bg-base-100 py-3 pl-9 pr-14 text-base-content outline-none transition placeholder:text-base-content/50 focus:border-primary focus:ring-2 focus:ring-primary/20"
                                     />
+
                                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-base-content/50">
-
-                                        / hour
-
+                                        / min
                                     </span>
-
                                 </div>
-                                {errors.hourlyPrice_Car && (
+
+                                {errors.price_Car && (
                                     <p className="mt-1 text-sm text-red-500">
-                                        Please enter a car hourly price of at least ৳60.
+                                        Please enter a car price of at least ৳1 per minute.
                                     </p>
                                 )}
                             </div>
 
-                            {/* Motorcycle Hourly Pricing */}
-
+                            {/* Motorcycle Pricing */}
                             <div>
-
                                 <h2 className="mb-2 font-bold text-base-content">
-
-                                    Motorcycle (Hourly Pricing)
-
+                                    Motorcycle (Per Minute Pricing)
                                 </h2>
-                                <div className="relative">
 
+                                <div className="relative">
                                     <span className="absolute left-4 top-1/2 -translate-y-1/2 font-medium text-base-content/60">
                                         ৳
                                     </span>
-                                    <input
 
-                                        {...register("hourlyPrice_Motorcycle", {
+                                    <input
+                                        {...register("price_Motorcycle", {
                                             required: true,
                                             valueAsNumber: true,
-                                            min: 60,
+                                            min: 1,
                                         })}
                                         type="number"
-                                        min="60"
-                                        placeholder="e.g. 60"
+                                        min="1"
+                                        placeholder="e.g. 1"
                                         className="w-full rounded-xl border border-base-300 bg-base-100 py-3 pl-9 pr-14 text-base-content outline-none transition placeholder:text-base-content/50 focus:border-primary focus:ring-2 focus:ring-primary/20"
                                     />
+
                                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-base-content/50">
-                                        / hour
+                                        / min
                                     </span>
                                 </div>
-                                {errors.hourlyPrice_Motorcycle && (
+
+                                {errors.price_Motorcycle && (
                                     <p className="mt-1 text-sm text-red-500">
-                                        Please enter a motorcycle hourly price of at least ৳60.
+                                        Please enter a motorcycle price of at least ৳1 per minute.
                                     </p>
                                 )}
                             </div>
@@ -976,9 +955,17 @@ const PartnerForm = () => {
                         <div className="flex justify-end pt-2">
                             <button
                                 type="submit"
+                                disabled={loading}
                                 className="w-full rounded-xl bg-orange-500 px-8 py-3.5 font-semibold text-white transition hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60 md:w-auto"
                             >
-                                Submit
+                                {loading ? (
+                                    <span className="flex items-center justify-center gap-2">
+                                        <span className="loading loading-spinner loading-sm"></span>
+                                        Submitting...
+                                    </span>
+                                ) : (
+                                    "Submit"
+                                )}
                             </button>
                         </div>
                     </form>

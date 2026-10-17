@@ -14,6 +14,8 @@ import PartnersApplication from "../pages/Dashboard/PartnersApplication/Partners
 import ManageMyApply from "../pages/Dashboard/ManageMyApply/ManageMyApply";
 import ManageAdmin from "../pages/Dashboard/ManageAdmin/ManageAdmin";
 import BookNow from "../pages/BookNow/BookNow";
+import PaymentSuccess from "../pages/BookNow/PaymentSuccess";
+import PaymentFaild from "../pages/BookNow/PaymentFaild";
 
 
 export const router = createBrowserRouter([
@@ -78,6 +80,14 @@ export const router = createBrowserRouter([
       {
         path:'ManageMyApply',
         Component: ManageMyApply
+      },
+      {
+        path:'payment-success',
+        Component:PaymentSuccess
+      },
+      {
+        path:'payment-cancelleds',
+        Component:PaymentFaild
       }
   ]
  }

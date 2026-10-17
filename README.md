@@ -6,3 +6,4 @@
 => react-leaflet@next leaflet
 => tanstack query
 => lottie-react
+=> stripe payment
