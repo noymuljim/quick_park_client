@@ -7,6 +7,7 @@ const UpcomingRequests = () => {
 
     const queryClient = useQueryClient();
 
+    // check in confirm
     const confirmMutation = useMutation({
         mutationFn: async (id) => {
             const res = await axiosSecure.patch(
@@ -18,6 +19,23 @@ const UpcomingRequests = () => {
             queryClient.invalidateQueries({
                 queryKey: ["upcoming-check-in"]
             });
+        }
+    });
+    // check out confirm
+    const confirmCheckoutMutation = useMutation({
+        mutationFn: async (id) => {
+            const res = await axiosSecure.patch(
+                `/payments/check-out-confirm/${id}`
+            );
+            return res.data;
+        },
+
+        onSuccess: (data) => {
+            if (data.success) {
+                queryClient.invalidateQueries({
+                    queryKey: ["upcoming-check-in"]
+                });
+            }
         }
     });
 
@@ -101,18 +119,40 @@ const UpcomingRequests = () => {
 
                                     <td>
                                         <span className="badge badge-warning">
-                                           {booking.status}
+                                            {booking.status}
                                         </span>
                                     </td>
 
                                     <td>
-                                        <button
-                                            onClick={() => confirmMutation.mutate(booking._id)}
-                                            disabled={booking.status==="waiting"}
-                                            className="btn btn-primary btn-sm rounded-full"
-                                        >
-                                            {confirmMutation.isPending ? "Confirming..." : "Confirm"}
-                                        </button>
+                                        <div>
+                                            {booking.status === "check-in req" && (
+                                                <button onClick={() => confirmMutation.mutate(booking._id)}
+
+                                                    className="btn rounded-full bg-green-500 hover:bg-green-700">Confirm check-in
+                                                </button>
+                                            )}
+
+                                            {/* checkout btn */}
+
+                                            {booking.status === "check-out req" && (
+                                                <button
+                                                    onClick={() => confirmCheckoutMutation.mutate(booking._id)}
+
+                                                    className="btn rounded-full bg-red-500">Check out Confirm</button>
+                                            )}
+
+                                            {booking.status === "check-out confirm" && (
+                                                <span>Check out done</span>
+                                            )}
+
+
+
+
+
+                                        </div>
+
+                                        {/*  */}
+
                                     </td>
                                 </tr>
                             ))

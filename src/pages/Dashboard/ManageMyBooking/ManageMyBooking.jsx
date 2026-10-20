@@ -32,12 +32,13 @@ const ManageMyBooking = () => {
     const handleCheckIn = (bookingId) => {
         checkInMutation.mutate(bookingId);
     };
+
     // check out req
 
-      const checkOutMutation = useMutation({
+    const checkOutMutation = useMutation({
         mutationFn: async (bookingId) => {
             const res = await axiosSecure.patch(
-                `/payments/check-in-request/${bookingId}`
+                `/payments/check-out-request/${bookingId}`
             );
             return res.data;
         },
@@ -49,7 +50,7 @@ const ManageMyBooking = () => {
         }
     });
 
-    const handleCheckOut= (bookingId) => {
+    const handleCheckOut = (bookingId) => {
         checkOutMutation.mutate(bookingId);
     };
 
@@ -123,29 +124,34 @@ const ManageMyBooking = () => {
                                         <h1 className="text-primary">To active your booking please click to check In first</h1>
 
                                     </div>
-                                     
-                                     <div className="flex items-center gap-4">
+
+                                    <div className="flex items-center gap-4">
                                         <div>
-                                       {booking.status === "waiting" && (
-                                         <button onClick={()=>handleCheckIn(booking._id)} 
-                                         disabled={booking.status ==="check-in req"}
-                                         className="btn rounded-full bg-green-500 hover:bg-green-700">Check In now</button>
-                                       )}
+                                            {booking.status === "waiting" && (
+                                                <button onClick={() => handleCheckIn(booking._id)}
+                                                    disabled={booking.status === "check-in req"}
+                                                    className="btn rounded-full bg-green-500 hover:bg-green-700">Check In now</button>
+                                            )}
 
-                                       {/* checkout btn */}
+                                            {/* checkout btn */}
+                                            {booking.status === "check-in confirm" && (
+                                                <button
+                                                    onClick={() => handleCheckOut(booking._id)}
+                                                   
+                                                    className="btn rounded-full bg-red-500 text-white hover:bg-red-700"
+                                                >
+                                                    {checkOutMutation.isPending
+                                                        ? "Processing..."
+                                                        : "Check Out Now"}
+                                                </button>
+                                            )}
 
-                                       {booking.status === "check-in confirm" && (
-                                         <button onClick={()=>handleCheckOut(booking._id)} 
-                                         disabled={booking.status ==="check-out req"}
-                                         className="btn rounded-full bg-red-500">Check out now</button>
-                                       )}
+                                        </div>
 
-                                     </div>
-
-                                     <div>
-                                       <h1>{booking.status}</h1>
-                                     </div>
-                                     </div>
+                                        <div>
+                                            <h1>{booking.status}</h1>
+                                        </div>
+                                    </div>
 
 
                                 </div>
