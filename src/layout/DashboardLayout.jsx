@@ -3,7 +3,7 @@ import { NavLink, Outlet } from "react-router";
 import useRole from "../Hooks/useRole";
 import L from "../assets/logo.png"
 import { MdBookmarkAdded, MdVerifiedUser } from "react-icons/md";
-import { FaRegHandshake } from "react-icons/fa";
+import { FaPlusCircle, FaRegHandshake } from "react-icons/fa";
 import { FaArrowsLeftRight, FaUserPen } from "react-icons/fa6";
 import { FiHome } from "react-icons/fi";
 import { RiFolderHistoryFill } from "react-icons/ri";
@@ -156,6 +156,20 @@ const DashboardLayout = () => {
                                         <FaRegHandshake className="shrink-0 text-lg" />
                                         <span className="is-drawer-close:hidden">
                                             Partners application
+                                        </span>
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink
+                                        to="/dashboard/UpcomingRequests"
+                                        className={linkStyle}
+                                        data-tip="Upcoming request"
+                                    >
+                                       
+
+                                        <FaPlusCircle className="shrink-0 text-lg" />
+                                        <span className="is-drawer-close:hidden">
+                                            Upcoming parking
                                         </span>
                                     </NavLink>
                                 </li>

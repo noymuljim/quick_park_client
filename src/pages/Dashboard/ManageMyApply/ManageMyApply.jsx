@@ -6,6 +6,7 @@ import { FaCarSide, FaMotorcycle } from "react-icons/fa";
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Loading from "../../../components/Loading/Loading";
+import { Link } from "react-router";
 
 const ManageMyApply = () => {
     const { user } = useAuth();
@@ -82,6 +83,7 @@ const ManageMyApply = () => {
                             <p className="mt-1 text-sm text-base-content/60">
                                 Your applications will appear here.
                             </p>
+                            <Link to="/becomePartner" className="btn my-5 hover:bg-amber-600 rounded-full bg-primary">Apply as partner</Link>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
