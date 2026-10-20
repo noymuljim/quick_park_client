@@ -144,15 +144,7 @@ const UpcomingRequests = () => {
                                             {booking.status === "check-out confirm" && (
                                                 <span>Check out done</span>
                                             )}
-
-
-
-
-
-                                        </div>
-
-                                        {/*  */}
-
+                                        </div>                                     
                                     </td>
                                 </tr>
                             ))

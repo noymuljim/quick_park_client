@@ -18,6 +18,7 @@ import PaymentSuccess from "../pages/BookNow/PaymentSuccess";
 import PaymentFaild from "../pages/BookNow/PaymentFaild";
 import ManageMyBooking from "../pages/Dashboard/ManageMyBooking/ManageMyBooking";
 import UpcomingRequests from "../pages/Dashboard/Admin/UpcomingRequests/UpcomingRequests";
+import BookingHistory from "../pages/Dashboard/BookingHistory/BookingHistory";
 
 
 export const router = createBrowserRouter([
@@ -91,7 +92,10 @@ export const router = createBrowserRouter([
         path:'ManageMyBooking',
         Component: ManageMyBooking
       },
-    
+      {
+        path:'BookingHistory',
+        Component: BookingHistory
+      },
       {
         path:'payment-success',
         Component:PaymentSuccess

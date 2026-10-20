@@ -59,7 +59,7 @@ const ManageMyBooking = () => {
         enabled: !!user?.email,
         queryFn: async () => {
             const res = await axiosSecure.get(
-                `/my-bookings?email=${encodeURIComponent(user.email)}&status=waiting`
+                `/my-bookings?email=${encodeURIComponent(user.email)}`
             );
             return res.data;
         }
@@ -137,7 +137,7 @@ const ManageMyBooking = () => {
                                             {booking.status === "check-in confirm" && (
                                                 <button
                                                     onClick={() => handleCheckOut(booking._id)}
-                                                   
+
                                                     className="btn rounded-full bg-red-500 text-white hover:bg-red-700"
                                                 >
                                                     {checkOutMutation.isPending
@@ -149,7 +149,7 @@ const ManageMyBooking = () => {
                                         </div>
 
                                         <div>
-                                            <h1>{booking.status}</h1>
+                                           <h1 className="badge badge-info text-secondary">{booking.status}</h1>
                                         </div>
                                     </div>
 
