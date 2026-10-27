@@ -5,14 +5,17 @@ import HowWorks from "../homeElements/HowWorks/howWorks";
 import Reviews from "../homeElements/Reviews/reviews";
 import MobileApp from "../homeElements/MobileApp/mobileApp"
 import FAQ from "../homeElements/FAQ/faq";
+import { useState } from "react";
+
 const reviewsPromise = fetch('/reviews.json').then(res=> res.json())
 
-const home = () => {
+const Home = () => {
+      const [target, setTarget] = useState(null);
     return (
         <div>
-            <Banner></Banner>
+            <Banner onSearch={setTarget}></Banner>
             <ParkingSlider></ParkingSlider>
-             <FindParking />
+             <FindParking target={target} />
             <div className="max-w-7xl mx-auto">
                
                 <HowWorks />
@@ -26,4 +29,4 @@ const home = () => {
     );
 };
 
-export default home;
+export default Home;
