@@ -1,74 +1,97 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { FiMapPin, FiCalendar, FiAlertCircle, FiCheckCircle, FiArrowRight } from "react-icons/fi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { FiMapPin, FiCalendar, FiAlertCircle, FiCheckCircle } from "react-icons/fi";
+import { FaArrowCircleRight } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { Link } from "react-router";
+
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Loading from "../../../components/Loading/Loading";
-import { FaArrowCircleRight } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const ManageMyBooking = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
-
-
-
-    // ckeck in req
     const queryClient = useQueryClient();
+
+
+
+    // Check-in request
     const checkInMutation = useMutation({
         mutationFn: async (bookingId) => {
-            const res = await axiosSecure.patch(
-                `/payments/check-in-request/${bookingId}`
-            );
+            const res = await axiosSecure.patch(`/booking/check-in-request/${bookingId}`);
             return res.data;
         },
-
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey: ["my-bookings", user?.email]
+                queryKey: ["my-bookings", user?.email],
             });
-        }
+        },
     });
 
-    const handleCheckIn = (bookingId) => {
-        checkInMutation.mutate(bookingId);
-    };
-
-    // check out req
-
+    // Check-out request
     const checkOutMutation = useMutation({
         mutationFn: async (bookingId) => {
-            const res = await axiosSecure.patch(
-                `/payments/check-out-request/${bookingId}`
-            );
+            const res = await axiosSecure.patch(`/booking/check-out-request/${bookingId}`);
             return res.data;
         },
-
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey: ["my-bookings", user?.email]
+                queryKey: ["my-bookings", user?.email],
             });
-        }
+        },
     });
 
-    const handleCheckOut = (bookingId) => {
-        checkOutMutation.mutate(bookingId);
-    };
-
+    // Get bookings
     const { data: bookings = [], isLoading } = useQuery({
-        queryKey: ["my-bookings", user?.email],
-        enabled: !!user?.email,
+        queryKey: ["my-booking", user?.email],
         queryFn: async () => {
-            const res = await axiosSecure.get(
-                `/my-bookings?email=${encodeURIComponent(user.email)}`
-            );
+            const res = await axiosSecure.get(`/my-booking?email=${user.email}`);
             return res.data;
-        }
+        },
+        enabled: !!user?.email,
+        refetchInterval: 5000,
     });
 
-    if (isLoading) {
-        return <Loading />;
-    }
 
+
+    // // swal2 when session is complete
+    const [dismissedBookingIds, setDismissedBookingIds] = useState([]);
+
+    useEffect(() => {
+        const completedBooking = bookings.find((booking) =>
+                booking.status === "complete session" &&
+                !sessionStorage.getItem(`completed-${booking._id}`)
+        );
+
+        if (!completedBooking) return;
+
+  
+        sessionStorage.setItem(`completed-${completedBooking._id}`, "true");
+
+        Swal.fire({
+            icon: "success",
+            title: "Thank You!",
+            text: `Your parking session at ${completedBooking.lotName} is complete. You can leave now. Have a safe journey!`,
+            confirmButtonText: "OK",
+            allowOutsideClick: false,
+        }).then(() => {
+            setDismissedBookingIds((previousIds) => [
+                ...previousIds,
+                completedBooking._id,
+            ]);
+        });
+    }, [bookings]);
+
+    const visibleBookings = bookings.filter(
+        (booking) =>
+            booking.status !== "complete session" &&
+            !dismissedBookingIds.includes(booking._id)
+    );
+
+
+    //time formating
     const formatDateTime = (dateTime) => {
         if (!dateTime) return "N/A";
 
@@ -78,271 +101,454 @@ const ManageMyBooking = () => {
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
-            hour12: true
+            hour12: true,
         });
     };
 
+    // Countdown component
+    const BookingCountdown = ({ expiresAt, status }) => {
+        const calculateTimeLeft = () => {
+            const difference =
+                new Date(expiresAt).getTime() - Date.now();
+
+            return Math.max(0, difference);
+        };
+
+        const [timeLeft, setTimeLeft] = useState(calculateTimeLeft);
+
+        useEffect(() => {
+            if (status !== "waiting for check-in") return;
+
+            const timer = setInterval(() => {
+                setTimeLeft(calculateTimeLeft());
+            }, 1000);
+
+            return () => clearInterval(timer);
+        }, [expiresAt, status]);
+
+        if (status !== "waiting for check-in") {
+            return (
+                <div className="flex flex-col items-center gap-1">
+                    <span className="text-[10px] font-medium text-secondary">
+                        BOOKING STATUS
+                    </span>
+                    <span className="badge badge-info badge-sm capitalize">
+                        {status}
+                    </span>
 
 
+                </div>
+            );
+        }
 
+        const totalSeconds = Math.floor(timeLeft / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+
+        return (
+            <div className="flex flex-col items-center gap-1 text-primary">
+                <span className="text-sm font-bold tabular-nums text-red-500">
+                    {timeLeft > 0
+                        ? `${minutes}:${String(seconds).padStart(2, "0")}`
+                        : "Expired"}
+                </span>
+
+                <span className="text-[10px] font-medium text-secondary">
+                    TIME LEFT
+                </span>
+            </div>
+        );
+    };
+
+    //payment
+    const handlePayment = async (bookingId) => {
+        const res = await axiosSecure.post("/create-checkout-session", { bookingId });
+
+        if (res.data.success) {
+            window.location.href = res.data.url;
+        } else {
+            alert(res.data.message);
+        }
+    };
+    if (isLoading) {
+        return <Loading />;
+    }
 
     return (
-        <div className="min-h-screen bg-base-200/40 px-4 py-8 md:px-8">
+        <div className="min-h-screen bg-base-200/40 px-4 md:px-8">
             <div>
-
-
                 {/* Booking List */}
-                {bookings.length === 0 ? (
-                    <div className="card border border-base-300 bg-base-100 shadow-sm">
+                {visibleBookings.length === 0 ? (
+                    <div className="flex min-h-[70vh] items-center justify-center p-4">
                         <div className="card-body items-center py-16 text-center">
                             <FiCalendar
                                 size={48}
                                 className="mb-3 text-base-content/30"
                             />
+
+
                             <h2 className="text-xl font-bold">
-                                No Bookings Yet
+                                No booking Yet, or booking expired!
                             </h2>
-                            <p className="text-base-content/60">
-                                Your parking reservations will appear here.
-                            </p>
+
+                            <p>Please create a new booking slot.</p>
+
+                            <Link to="/" className="btn btn-primary">
+                                Book Now
+                            </Link>
                         </div>
                     </div>
                 ) : (
-
                     <div className="w-full">
-                        {bookings.map((booking) => (
-                            <div
-                                key={booking._id}
+                        {visibleBookings.map((booking) => {
 
-                            >
-                                <div className="flex justify-between mb-10 items-center gap-2">
-                                    <div>
-                                        <div className="flex gap-3 items-center">
-                                            <h1 className="text-3xl font-bold md:text-4xl">LIVE status of your booking</h1>
-                                            <FaArrowCircleRight className="animate-[moveHorizontal_1s_ease-in-out_infinite]" size={19} />
-                                        </div>
-                                        <h1 className="text-primary">To active your booking please click to check In first</h1>
+                            const startTime = booking.checkInConfirmedAt
+                                ? new Date(booking.checkInConfirmedAt).getTime()
+                                : NaN;
 
-                                    </div>
+                            const endTime = booking.paymentRequestedAt
+                                ? new Date(booking.paymentRequestedAt).getTime()
+                                : NaN;
 
-                                    <div className="flex items-center gap-4">
+                            const totalMinutes =
+                                Number.isFinite(startTime) &&
+                                    Number.isFinite(endTime) &&
+                                    endTime >= startTime
+                                    ? Math.ceil(
+                                        (endTime - startTime) / (1000 * 60)
+                                    )
+                                    : 0;
+
+                            const pricePerMinute = Number(
+                                booking.pricePerMinute ?? 0
+                            );
+
+                            const totalAmount =
+                                totalMinutes * pricePerMinute;
+
+                            return (
+                                <div key={booking._id}>
+                                    {/* Header */}
+                                    <div className="mb-10 flex items-center justify-between gap-2">
                                         <div>
-                                            {booking.status === "waiting" && (
-                                                <button onClick={() => handleCheckIn(booking._id)}
-                                                    disabled={booking.status === "check-in req"}
-                                                    className="btn rounded-full bg-green-500 hover:bg-green-700">Check In now</button>
-                                            )}
+                                            <div className="flex items-center gap-3">
+                                                <h1 className="text-3xl font-bold md:text-4xl">
+                                                    LIVE status of your booking
+                                                </h1>
 
-                                            {/* checkout btn */}
-                                            {booking.status === "check-in confirm" && (
-                                                <button
-                                                    onClick={() => handleCheckOut(booking._id)}
+                                                <FaArrowCircleRight
+                                                    className="animate-[moveHorizontal_1s_ease-in-out_infinite]"
+                                                    size={19}
+                                                />
+                                            </div>
 
-                                                    className="btn rounded-full bg-red-500 text-white hover:bg-red-700"
-                                                >
-                                                    {checkOutMutation.isPending
-                                                        ? "Processing..."
-                                                        : "Check Out Now"}
-                                                </button>
-                                            )}
-
+                                            <h1 className="text-primary">
+                                                To activate your booking,
+                                                please click Check In first.
+                                            </h1>
                                         </div>
 
                                         <div>
-                                           <h1 className="badge badge-info text-secondary">{booking.status}</h1>
+                                            <h1 className="badge badge-info text-secondary">
+                                                {booking.status}
+                                            </h1>
                                         </div>
                                     </div>
 
+                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                                        {/* Vehicle Information */}
+                                        <div className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm transition hover:shadow-md">
+                                            <p className="text-sm font-medium text-base-content/60">
+                                                Vehicle Information
+                                            </p>
 
-                                </div>
+                                            <div className="mt-3 space-y-3">
+                                                <div>
+                                                    <p className="text-xs text-base-content/50">
+                                                        Vehicle Type
+                                                    </p>
 
-
-                                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-
-                                    {/* Vehicle Type */}
-                                    <div className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm transition hover:shadow-md">
-
-
-                                        <p className="text-sm font-medium text-base-content/60">
-                                            Vehicle Type
-                                        </p>
-
-                                        <p className="mt-2 truncate text-xl font-bold capitalize">
-                                            {booking.V_type || "N/A"}
-                                        </p>
-
-
-                                    </div>
-
-                                    {/* Vehicle Number */}
-                                    <div className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm transition hover:shadow-md">
-
-
-                                        <p className="text-sm font-medium text-base-content/60">
-                                            Vehicle Number
-                                        </p>
-
-                                        <p className="mt-2 break-all text-xl font-bold">
-                                            {booking.V_number || "N/A"}
-                                        </p>
-
-
-                                    </div>
-
-                                    {/* Total Amount */}
-                                    <div className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm transition hover:shadow-md">
-
-
-                                        <p className="text-sm font-medium text-base-content/60">
-                                            Total Amount
-                                        </p>
-
-                                        <p className="mt-2 text-2xl font-extrabold tracking-tight text-secondary">
-                                            ৳{Number(
-                                                booking.amount ?? booking.totalPrice ?? 0
-                                            ).toLocaleString("en-BD")}
-                                        </p>
-
-
-                                    </div>
-
-                                    {/* Paid At */}
-                                    <div className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm transition hover:shadow-md">
-                                        <p className="text-sm font-medium text-base-content/60">
-                                            Paid At
-                                        </p>
-                                        <p className="mt-2 text-lg font-bold leading-7">
-                                            {booking.paidAt
-                                                ? formatDateTime(booking.paidAt)
-                                                : "Not paid yet"}
-                                        </p>
-                                    </div>
-
-
-                                </div>
-
-                                <div className="rounded-2xl mt-4 flex justify-between border border-base-300 bg-base-100 p-5 shadow-sm transition hover:shadow-md">
-                                    <div>
-                                        <p className="text-sm font-medium text-base-content/60">
-                                            Transaction Id
-                                        </p>
-                                        <p className="mt-2 text-lg font-bold leading-7">
-                                            {booking.transactionId}
-                                        </p>
-                                    </div>
-
-
-                                    <span
-                                        className={`badge badge-sm shrink-0 gap-1 py-3 capitalize ${booking.paymentStatus === "paid"
-                                            ? "badge-success"
-                                            : booking.paymentStatus === "pending"
-                                                ? "badge-warning"
-                                                : booking.paymentStatus === "failed"
-                                                    ? "badge-error"
-                                                    : "badge-ghost"
-                                            }`}
-                                    >
-                                        {booking.paymentStatus === "paid" && (
-                                            <FiCheckCircle size={12} />
-                                        )}
-                                        {booking.paymentStatus}
-                                    </span>
-
-                                </div>
-
-
-
-
-
-
-                                <div className=" my-4 group overflow-hidden rounded-2xl border border-base-300 bg-base-100 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-
-                                    <div className="h-1 bg-gradient-to-r from-primary via-amber-400 to-transparent" />
-
-                                    <div className="p-5 sm:p-6">
-
-                                        {/* Header */}
-                                        <div className="flex items-start justify-between gap-3">
-                                            <div className="flex min-w-0 items-start gap-3">
-                                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                                                    <FiMapPin size={23} />
+                                                    <p className="mt-1 text-lg font-bold capitalize">
+                                                        {booking.V_type ||
+                                                            booking.vehicle ||
+                                                            "N/A"}
+                                                    </p>
                                                 </div>
 
-                                                <div className="min-w-0">
+                                                <div className="border-t border-base-300 pt-3">
+                                                    <p className="text-xs text-base-content/50">
+                                                        Vehicle Number
+                                                    </p>
 
-
-                                                    <h2 className=" break-words text-lg font-bold sm:text-xl">
-                                                        {booking.lotName}
-                                                    </h2>
-
-                                                    <p className="mt-1 text-xs text-base-content/50">
-                                                        Booking ID: {booking._id}
+                                                    <p className="mt-1 break-all text-lg font-bold">
+                                                        {booking.V_number ||
+                                                            "N/A"}
                                                     </p>
                                                 </div>
                                             </div>
-
-
                                         </div>
 
-                                        <div className="my-5 border-t border-base-300" />
+                                        {/* Payment Information */}
+                                        <div className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm transition hover:shadow-md">
+                                            <p className="text-sm font-medium text-base-content/60">
+                                                Payment Information
+                                            </p>
 
-                                        {/* Booking time */}
-                                        <div className="rounded-xl bg-base-200/50 p-4">
-                                            <div className="mb-4 flex items-center gap-2">
-                                                <FiCalendar className="text-primary" size={17} />
-                                                <h3 className="text-sm font-semibold">
-                                                    Booking Schedule
-                                                </h3>
-                                            </div>
+                                            <div className="mt-3 space-y-3">
+                                                <div>
+                                                    <p className="text-xs text-green-500">
+                                                        Total Amount to Pay
+                                                    </p>
 
-                                            <div className="grid grid-cols-3 items-center gap-3">
-                                                <div className="min-w-0">
-                                                    <p className="mb-1 text-xs text-base-content/50">
-                                                        START
+                                                    <p className="mt-1 text-2xl font-extrabold tracking-tight text-secondary">
+                                                        ৳
+                                                        {totalAmount.toLocaleString(
+                                                            "en-BD"
+                                                        )}
                                                     </p>
-                                                    <p className="text-sm font-bold">
-                                                        {formatDateTime(booking.startTime)}
+
+                                                    <p className="text-xs text-base-content/60">
+                                                        Rate: ৳
+                                                        {pricePerMinute}
+                                                        /minute
                                                     </p>
+
+
                                                 </div>
 
-                                                <div className="flex flex-col items-center gap-1 text-primary ">
-                                                    <FiArrowRight className="animate-[moveHorizontal_1s_ease-in-out_infinite]" size={19} />
-                                                    <span className="text-[10px] font-medium">
-                                                        PARKING
+                                                <div className=" flex justify-between">
+                                                    <div className="border-t border-base-300 pt-3">
+                                                        <p className="text-xs text-base-content/50">
+                                                            check-in confirmed at
+                                                        </p>
+
+                                                        <p className="mt-1 text-sm leading-7">
+                                                            {booking.checkInConfirmedAt
+                                                                ? formatDateTime(
+                                                                    booking.checkInConfirmedAt
+                                                                )
+                                                                : "Not checked in yet"}
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="border-t border-base-300 pt-3">
+                                                        <p className="text-xs text-base-content/50">
+                                                            check-out & pay req at
+                                                        </p>
+
+                                                        <p className="mt-1 text-sm leading-7">
+                                                            {booking.paymentRequestedAt
+                                                                ? formatDateTime(
+                                                                    booking.paymentRequestedAt
+                                                                )
+                                                                : "Not pay or checked out yet"}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <p className="mt-1 text-xs text-primary">
+                                                    Parking Duration:{" "}
+                                                    {totalMinutes} minutes
+                                                </p>
+
+                                            </div>
+                                        </div>
+
+                                        {/* Transaction Information */}
+                                        <div className="rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm transition hover:shadow-md">
+                                            <p className="text-sm font-medium text-base-content/60">
+                                                Transaction Information
+                                            </p>
+
+                                            <div className="mt-3 space-y-3">
+                                                <div className="flex items-center justify-between gap-3 pt-3">
+                                                    <p className="text-sm text-base-content/60">
+                                                        Payment Status
+                                                    </p>
+
+                                                    <span
+                                                        className={`badge badge-sm shrink-0 gap-1 py-3 capitalize ${booking.paymentStatus ===
+                                                            "paid"
+                                                            ? "badge-success"
+                                                            : booking.paymentStatus ===
+                                                                "pending"
+                                                                ? "badge-warning"
+                                                                : booking.paymentStatus ===
+                                                                    "failed"
+                                                                    ? "badge-error"
+                                                                    : "badge-ghost"
+                                                            }`}
+                                                    >
+                                                        {booking.paymentStatus ===
+                                                            "paid" && (
+                                                                <FiCheckCircle
+                                                                    size={12}
+                                                                />
+                                                            )}
+
+                                                        {booking.paymentStatus ||
+                                                            "unpaid"}
                                                     </span>
                                                 </div>
 
-                                                <div className="min-w-0 text-right">
-                                                    <p className="mb-1 text-xs text-base-content/50">
-                                                        END
+                                                <div className="mt-6 border-t border-base-300 pt-4">
+                                                    <p className="text-xs text-base-content/50">
+                                                        Transaction ID
                                                     </p>
-                                                    <p className="text-sm font-bold">
-                                                        {formatDateTime(booking.endTime)}
+
+                                                    <p className="mt-1 break-all text-base font-bold leading-7">
+                                                        {booking.transactionId ||
+                                                            "N/A"}
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
 
+                                    {/* Booking Details */}
+                                    <div className="group my-4 overflow-hidden rounded-2xl border border-base-300 bg-base-100 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                        <div className="h-1 bg-gradient-to-r from-primary via-amber-400 to-transparent" />
 
+                                        <div className="p-5 sm:p-6">
+                                            {/* Header */}
+                                            <div className="flex items-start justify-between gap-3">
+                                                <div className="flex min-w-0 items-start gap-3">
+                                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                                                        <FiMapPin size={23} />
+                                                    </div>
 
+                                                    <div className="min-w-0">
+                                                        <h2 className="break-words text-lg font-bold sm:text-xl">
+                                                            {booking.lotName}
+                                                        </h2>
 
-
-                                        {booking.paymentStatus === "pending" && (
-                                            <div className="mt-4 flex items-start gap-2 rounded-lg bg-warning/10 p-3 text-sm text-warning">
-                                                <FiAlertCircle className="mt-0.5 shrink-0" size={17} />
-                                                <p>
-                                                    Your payment is pending. Complete payment to confirm
-                                                    your parking reservation.
-                                                </p>
+                                                        <p className="mt-1 text-xs text-base-content/50">
+                                                            Booking ID:{" "}
+                                                            {booking._id}
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
+
+                                            <div className="my-5 border-t border-base-300" />
+
+                                            {/* Booking Schedule */}
+                                            <div className="rounded-xl bg-base-200/50 p-4">
+                                                <div className="mb-4 flex items-center gap-2">
+                                                    <FiCalendar
+                                                        className="text-primary"
+                                                        size={17}
+                                                    />
+
+                                                    <h3 className="text-sm font-semibold">
+                                                        Booking Schedule
+                                                    </h3>
+                                                </div>
+
+                                                <div className="grid grid-cols-3 items-center gap-3">
+                                                    <div className="min-w-0">
+                                                        <p className="mb-1 text-xs text-base-content/50">
+                                                            START
+                                                        </p>
+
+                                                        <p className="text-sm font-bold">
+                                                            {formatDateTime(
+                                                                booking.createdAt
+                                                            )}
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="flex flex-col items-center gap-1 text-primary">
+                                                        <BookingCountdown
+                                                            expiresAt={
+                                                                booking.expiresAt
+                                                            }
+                                                            status={
+                                                                booking.status
+                                                            }
+                                                        />
+                                                    </div>
+
+                                                    <div className="min-w-0 text-right">
+                                                        <p className="mb-1 text-xs text-base-content/50">
+                                                            EXPIRES
+                                                        </p>
+
+                                                        <p className="text-sm font-bold">
+                                                            {formatDateTime(
+                                                                booking.expiresAt
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {booking.status ===
+                                                "waiting for check-in" && (
+                                                    <div className="mt-4 flex items-center justify-center gap-2 rounded-lg bg-warning/10 p-3 text-center text-sm text-secondary">
+                                                        <FiAlertCircle
+                                                            className="shrink-0"
+                                                            size={17}
+                                                        />
+
+                                                        <p>
+                                                            Please complete the
+                                                            Check in action before
+                                                            it expires.
+                                                        </p>
+                                                    </div>
+                                                )}
+                                        </div>
+                                    </div>
+
+                                    {/* Booking Actions */}
+                                    <div>
+                                        {booking.status === "waiting for check-in" && (
+                                            <button
+                                                disabled={checkInMutation.isPending
+                                                }
+                                                onClick={() =>
+                                                    checkInMutation.mutate(
+                                                        booking._id
+                                                    )
+                                                }
+                                                className="btn btn-primary w-full"
+                                            >
+                                                Check In
+                                            </button>
                                         )}
+
+                                        {booking.status ===
+                                            "check-in confirm" && (
+                                                <button
+                                                    disabled={
+                                                        checkOutMutation.isPending
+                                                    }
+                                                    onClick={() =>
+                                                        checkOutMutation.mutate(
+                                                            booking._id
+                                                        )
+                                                    }
+                                                    className="btn btn-primary w-full"
+                                                >
+                                                    Check Out
+                                                </button>
+                                            )}
+
+                                        {booking.status ===
+                                            "payment pending" && (
+                                                <button
+                                                    onClick={() => handlePayment(booking._id)}
+                                                    className="btn btn-primary w-full"
+                                                >
+                                                    Pay Now
+                                                </button>
+                                            )}
+
                                     </div>
                                 </div>
-
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
-
                 )}
             </div>
         </div>

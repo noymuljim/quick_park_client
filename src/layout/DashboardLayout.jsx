@@ -115,13 +115,13 @@ const DashboardLayout = () => {
                                 </NavLink>                             
                             </li>
                         <li>
-                                <NavLink to="/dashboard/BookingHistory"
+                                <NavLink to="/dashboard/MyBookingHistory"
                                     className={linkStyle}
-                                    data-tip="booking history"
+                                    data-tip="my booking history"
                                 >
                                     <RiFolderHistoryFill  className="shrink-0 text-lg" />
                                     <span className="is-drawer-close:hidden">
-                                    Booking history
+                                    My booking history
                                     </span>
                                 </NavLink>
                                

@@ -10,9 +10,7 @@ const UpcomingRequests = () => {
     // check in confirm
     const confirmMutation = useMutation({
         mutationFn: async (id) => {
-            const res = await axiosSecure.patch(
-                `/payments/check-in-confirm/${id}`
-            );
+            const res = await axiosSecure.patch(`/check-in-confirm/${id}`);
             return res.data;
         },
         onSuccess: () => {
@@ -21,12 +19,10 @@ const UpcomingRequests = () => {
             });
         }
     });
-    // check out confirm
-    const confirmCheckoutMutation = useMutation({
+    //payment req
+       const checkOut_paymentRequest = useMutation({
         mutationFn: async (id) => {
-            const res = await axiosSecure.patch(
-                `/payments/check-out-confirm/${id}`
-            );
+            const res = await axiosSecure.patch(`/check-out-confirm/payment-request/${id}`);
             return res.data;
         },
 
@@ -38,17 +34,34 @@ const UpcomingRequests = () => {
             }
         }
     });
+    //complete session
+       const complete_session = useMutation({
+        mutationFn: async (id) => {
+            const res = await axiosSecure.patch(`/complete-session/${id}`);
+            return res.data;
+        },
+
+        onSuccess: (data) => {
+            if (data.success) {
+                queryClient.invalidateQueries({
+                      queryKey: ["upcoming-check-in"]
+                });
+            }
+        }
+    });
 
 
 
     const axiosSecure = useAxiosSecure();
-    const { data: bookings = [], isLoading } = useQuery({
-        queryKey: ["upcoming-check-in"],
-        queryFn: async () => {
-            const res = await axiosSecure.get("/payments?status=check-in req");
-            return res.data;
-        }
-    });
+   
+   const { data: bookings = [], isLoading } = useQuery({
+    queryKey: ["upcoming-check-in"],
+    queryFn: async () => {
+        const res = await axiosSecure.get("/upcoming-requests");
+        return res.data;
+    },
+    refetchInterval: 5000,
+});
 
     if (isLoading) {
         return <Loading />;
@@ -125,25 +138,28 @@ const UpcomingRequests = () => {
 
                                     <td>
                                         <div>
-                                            {booking.status === "check-in req" && (
+                                            {booking.status === "check-in requested" && (
                                                 <button onClick={() => confirmMutation.mutate(booking._id)}
 
                                                     className="btn rounded-full bg-green-500 hover:bg-green-700">Confirm check-in
-                                                </button>
+                                                </button>  
                                             )}
 
-                                            {/* checkout btn */}
+                                    
 
-                                            {booking.status === "check-out req" && (
+                                            {booking.status === "check-out requested" && (
                                                 <button
-                                                    onClick={() => confirmCheckoutMutation.mutate(booking._id)}
+                                                    onClick={() => checkOut_paymentRequest.mutate(booking._id)}
 
-                                                    className="btn rounded-full bg-red-500">Check out Confirm</button>
+                                                    className="btn rounded-full bg-red-500">Confirm and pay req</button>
                                             )}
+                                            {booking.status === "payment verifying" && (
+                                                <button
+                                                    onClick={() => complete_session.mutate(booking._id)}
 
-                                            {booking.status === "check-out confirm" && (
-                                                <span>Check out done</span>
+                                                    className="btn rounded-full bg-red-500">Complete</button>
                                             )}
+                                          
                                         </div>                                     
                                     </td>
                                 </tr>

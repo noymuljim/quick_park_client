@@ -88,7 +88,7 @@ const Login = () => {
                         >
                             Login
                         </button>
-                        <div className="divider divider-warning">or</div>
+                        <div className="divider divider-warning">aaaAAA1!</div>
                         <SocialLogin></SocialLogin>
 
                     </form>
