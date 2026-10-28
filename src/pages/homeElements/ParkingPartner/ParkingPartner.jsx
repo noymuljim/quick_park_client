@@ -18,7 +18,7 @@ const items = [
         subTitle: "Get paid fast with hassle-free control"
     }
 ]
-const mobileApp = () => {
+const ParkingPartner = () => {
     return (
         <div className="my-24">
             <div className="mb-16 space-y-4 text-center">
@@ -33,7 +33,7 @@ const mobileApp = () => {
     {items.map((item, index) => (
         <div
             key={index}
-            className="group flex items-center gap-5 rounded-2xl border border-gray-100 bg-gray-500 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+            className="group flex items-center gap-5 rounded-2xl  bg-gray-500 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
         >
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-2xl text-orange-500 transition duration-300 group-hover:bg-orange-500 group-hover:text-white">
                 {item.icon}
@@ -55,4 +55,4 @@ const mobileApp = () => {
     );
 };
 
-export default mobileApp;
+export default ParkingPartner;

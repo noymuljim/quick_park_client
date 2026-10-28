@@ -158,12 +158,12 @@ const ManageMyApply = () => {
                                                 <div className="space-y-3 text-sm text-base-content/70">
                                                     <p className="flex items-center gap-2">
                                                         <FaCarSide className="text-base-content/50" />
-                                                        ৳{a.hourlyPrice_Car}/hr
+                                                        ৳{a.price_Car}/min
                                                     </p>
 
                                                     <p className="flex items-center gap-2">
                                                         <FaMotorcycle className="text-base-content/50" />
-                                                        ৳{a.hourlyPrice_Motorcycle}/hr
+                                                        ৳{a.price_Motorcycle}/min
                                                     </p>
                                                 </div>
                                             </td>
@@ -187,11 +187,11 @@ const ManageMyApply = () => {
                                             </td>
 
                                             {/* Delete */}
-                                            <td className="px-6 py-5">
+                                            {/* <td className="px-6 py-5">
                                                 <button className="btn">
                                                     delet
                                                 </button>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     ))}
                                 </tbody>

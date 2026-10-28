@@ -588,10 +588,10 @@ const PartnersApplication = () => {
 
                                             <p className="mt-2 text-2xl font-bold text-primary">
                                                 ৳
-                                                {selectedPartner.hourlyPrice_Car ?? "—"}
+                                                {selectedPartner.price_Car ?? "—"}
 
                                                 <span className="ml-1 text-sm font-normal text-base-content/60">
-                                                    / hour
+                                                    / min
                                                 </span>
                                             </p>
                                         </div>
@@ -603,7 +603,7 @@ const PartnersApplication = () => {
 
                                             <p className="mt-2 text-2xl font-bold text-primary">
                                                 ৳
-                                                {selectedPartner.hourlyPrice_Motorcycle ??
+                                                {selectedPartner.price_Motorcycle ??
                                                     "—"}
 
                                                 <span className="ml-1 text-sm font-normal text-base-content/60">

@@ -1,67 +1,118 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import useAuth from "../../../../Hooks/useAuth"; 
 import Loading from "../../../../components/Loading/Loading";
+import Swal from "sweetalert2";
 
 
 const UpcomingRequests = () => {
 
     const queryClient = useQueryClient();
+    const axiosSecure = useAxiosSecure();   
+    const { user } = useAuth();            
+    const email = user?.email;              
 
     // check in confirm
     const confirmMutation = useMutation({
         mutationFn: async (id) => {
-            const res = await axiosSecure.patch(`/check-in-confirm/${id}`);
+            const res = await axiosSecure.patch(`/check-in-confirm/${id}?email=${email}`); 
             return res.data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey: ["upcoming-check-in"]
+                queryKey: ["partner-upcoming-check-in", email]  
             });
+            Swal.fire({
+                icon: "success",
+                title: "Check-in confirmed!",
+                confirmButtonText: "OK",
+            });
+        },
+        onError: (error) => {
+            Swal.fire({
+                icon: "error",
+                title: "Check-in Failed!",
+                text:
+                    error.response?.data?.message ||
+                    "Something went wrong. Please try again.",
+                confirmButtonText: "OK",
+            });
+
         }
     });
     //payment req
-       const checkOut_paymentRequest = useMutation({
+    const checkOut_paymentRequest = useMutation({
         mutationFn: async (id) => {
-            const res = await axiosSecure.patch(`/check-out-confirm/payment-request/${id}`);
+            const res = await axiosSecure.patch(`/check-out-confirm/payment-request/${id}?email=${email}`); 
             return res.data;
         },
 
         onSuccess: (data) => {
             if (data.success) {
                 queryClient.invalidateQueries({
-                    queryKey: ["upcoming-check-in"]
+                    queryKey: ["partner-upcoming-check-in", email] 
+                });
+                Swal.fire({
+                    icon: "success",
+                    title: "payment request sent!",
+                    confirmButtonText: "OK",
                 });
             }
+        },
+        onError: (error) => {
+            Swal.fire({
+                icon: "error",
+                title: "payment request Failed!",
+                text:
+                    error.response?.data?.message ||
+                    "Something went wrong. Please try again.",
+                confirmButtonText: "OK",
+            });
+
         }
+
     });
     //complete session
-       const complete_session = useMutation({
+    const complete_session = useMutation({
         mutationFn: async (id) => {
-            const res = await axiosSecure.patch(`/complete-session/${id}`);
+            const res = await axiosSecure.patch(`/complete-session/${id}?email=${email}`); 
             return res.data;
         },
 
         onSuccess: (data) => {
             if (data.success) {
                 queryClient.invalidateQueries({
-                      queryKey: ["upcoming-check-in"]
+                    queryKey: ["partner-upcoming-check-in", email]  
+                });
+                Swal.fire({
+                    icon: "success",
+                    title: "Session complete!",
+                    confirmButtonText: "OK",
                 });
             }
+        },
+        onError: (error) => {
+            Swal.fire({
+                icon: "error",
+                title: "Session Failed!",
+                text:
+                    error.response?.data?.message ||
+                    "Something went wrong. Please try again.",
+                confirmButtonText: "OK",
+            });
+
         }
     });
 
-
-
-    const axiosSecure = useAxiosSecure();
-   
-   const { data: bookings = [], isLoading } = useQuery({
-    queryKey: ["upcoming-check-in"],
-    queryFn: async () => {
-        const res = await axiosSecure.get("/upcoming-requests");
-        return res.data;
-    },
-    refetchInterval: 5000,
-});
+    const { data: bookings = [], isLoading } = useQuery({
+        queryKey: ["partner-upcoming-check-in", email],   
+        enabled: !!email,                                 
+        queryFn: async () => {
+            const res = await axiosSecure.get(`/partner/upcoming-requests?email=${email}`); 
+            return res.data;
+        },
+        refetchInterval: 5000,
+    });
 
     if (isLoading) {
         return <Loading />;
@@ -95,7 +146,7 @@ const UpcomingRequests = () => {
                     <tbody>
                         {bookings.length === 0 ? (
                             <tr>
-                                <td colSpan={7} className="py-10 text-center">
+                                <td className="py-10 text-center"> 
                                     No requests found.
                                 </td>
                             </tr>
@@ -142,10 +193,10 @@ const UpcomingRequests = () => {
                                                 <button onClick={() => confirmMutation.mutate(booking._id)}
 
                                                     className="btn rounded-full bg-green-500 hover:bg-green-700">Confirm check-in
-                                                </button>  
+                                                </button>
                                             )}
 
-                                    
+
 
                                             {booking.status === "check-out requested" && (
                                                 <button
@@ -159,8 +210,8 @@ const UpcomingRequests = () => {
 
                                                     className="btn rounded-full bg-red-500">Complete</button>
                                             )}
-                                          
-                                        </div>                                     
+
+                                        </div>
                                     </td>
                                 </tr>
                             ))

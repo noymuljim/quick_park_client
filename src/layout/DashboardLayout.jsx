@@ -7,16 +7,17 @@ import { FaPlusCircle, FaRegHandshake } from "react-icons/fa";
 import { FaArrowsLeftRight, FaUserPen } from "react-icons/fa6";
 import { FiHome } from "react-icons/fi";
 import { RiFolderHistoryFill } from "react-icons/ri";
+import { HiSquaresPlus } from "react-icons/hi2";
+
 
 const DashboardLayout = () => {
     const { role } = useRole();
 
     const linkStyle = ({ isActive }) =>
         `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200
-        ${
-            isActive
-                ? "bg-primary text-black"
-                : "text-base-content/70 hover:bg-primary/10 hover:text-primary"
+        ${isActive
+            ? "bg-primary text-black"
+            : "text-base-content/70 hover:bg-primary/10 hover:text-primary"
         }`;
 
     return (
@@ -35,7 +36,7 @@ const DashboardLayout = () => {
                         aria-label="open sidebar"
                         className="btn btn-square btn-ghost rounded-xl text-xl"
                     >
-                      <FaArrowsLeftRight />
+                        <FaArrowsLeftRight />
                     </label>
 
                     <div className="ml-3 text-lg font-extrabold tracking-tight">
@@ -63,7 +64,7 @@ const DashboardLayout = () => {
                     {/* Sidebar title */}
                     <div className="flex h-16 w-full items-center gap-3 border-b border-base-300 px-4">
                         <div className=" size-9 shrink-0 bg-white rounded-xl">
-                           <img src={L} alt="" />
+                            <img src={L} alt="" />
                         </div>
 
                         <span className="text-lg font-extrabold is-drawer-close:hidden">
@@ -102,33 +103,52 @@ const DashboardLayout = () => {
                             </li>
                         )}
                         {/* User */}
-                        {(role === "user") && ( <>
-                        <li>
+                        {(role === "user") && (<>
+                            <li>
                                 <NavLink to="/dashboard/ManageMyBooking"
                                     className={linkStyle}
                                     data-tip="manage my booking"
                                 >
                                     <MdBookmarkAdded className="shrink-0 text-lg" />
                                     <span className="is-drawer-close:hidden">
-                                    Manage my booking
+                                        Manage my booking
                                     </span>
-                                </NavLink>                             
+                                </NavLink>
                             </li>
-                        <li>
+                            <li>
                                 <NavLink to="/dashboard/MyBookingHistory"
                                     className={linkStyle}
                                     data-tip="my booking history"
                                 >
-                                    <RiFolderHistoryFill  className="shrink-0 text-lg" />
+                                    <RiFolderHistoryFill className="shrink-0 text-lg" />
                                     <span className="is-drawer-close:hidden">
-                                    My booking history
+                                        My booking history
                                     </span>
                                 </NavLink>
-                               
-                             
+
+
                             </li>
                         </>
-                            
+
+                        )}
+                        {role === "partner" && (
+                            <>
+                                <li>
+                                    <NavLink
+                                        to="/dashboard/UpcomingRequests"
+                                        className={linkStyle}
+                                        data-tip="Upcoming request"
+                                    >
+
+
+                                        <FaPlusCircle className="shrink-0 text-lg" />
+                                        <span className="is-drawer-close:hidden">
+                                            Upcoming parking
+                                        </span>
+                                    </NavLink>
+                                </li>
+
+                            </>
                         )}
 
                         {/* Admin */}
@@ -161,23 +181,22 @@ const DashboardLayout = () => {
                                 </li>
                                 <li>
                                     <NavLink
-                                        to="/dashboard/UpcomingRequests"
+                                        to="/dashboard/AllBookingsHistory"
                                         className={linkStyle}
-                                        data-tip="Upcoming request"
+                                        data-tip="All Bookings History"
                                     >
-                                       
-
-                                        <FaPlusCircle className="shrink-0 text-lg" />
+                                        <HiSquaresPlus className="shrink-0 text-lg" />
                                         <span className="is-drawer-close:hidden">
-                                            Upcoming parking
+                                            All bookings history
                                         </span>
                                     </NavLink>
                                 </li>
+
                             </>
                         )}
 
-                       
-                      
+
+
                     </ul>
                 </div>
             </div>

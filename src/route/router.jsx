@@ -19,6 +19,8 @@ import PaymentFaild from "../pages/BookNow/PaymentFaild";
 import ManageMyBooking from "../pages/Dashboard/ManageMyBooking/ManageMyBooking";
 import UpcomingRequests from "../pages/Dashboard/Admin/UpcomingRequests/UpcomingRequests";
 import MyBookingHistory from "../pages/Dashboard/MyBookingHistory/MyBookingHistory";
+import AllBookingsHistory from "../pages/Dashboard/Admin/AllBookingsHistory/AllBookingsHistory";
+import PartnerRoute from "./PartnerRoute";
 
 
 export const router = createBrowserRouter([
@@ -30,7 +32,7 @@ export const router = createBrowserRouter([
         index: true,
         Component: Home
       },
-     
+
 
     ]
   },
@@ -50,61 +52,70 @@ export const router = createBrowserRouter([
     ]
   },
   {
-    path:'/',
-    Component:formLayout,
-    children:[
+    path: '/',
+    Component: formLayout,
+    children: [
       {
-        path:'/becomePartner',
-        element:<PrivateRoute><PartnerForm /> </PrivateRoute>,
-         loader: () => fetch('/serviceCenters.json').then(res => res.json())
+        path: '/becomePartner',
+        element: <PrivateRoute><PartnerForm /> </PrivateRoute>,
+        loader: () => fetch('/serviceCenters.json').then(res => res.json())
 
       },
       {
-        path:'/bookNow',
-        element:<PrivateRoute><BookNow></BookNow></PrivateRoute>
+        path: '/bookNow',
+        element: <PrivateRoute><BookNow></BookNow></PrivateRoute>
       }
     ]
   },
- {
-  path:'dashboard',
-  element:<PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
-  children:[
+  {
+    path: 'dashboard',
+    element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    children: [
       {
         index: true,
-        Component:DashboardHome,
+        Component: DashboardHome,
       },
       {
-        path:'manageAdmin',
+        path: 'manageAdmin',
         element: <AdminRoute><ManageAdmin></ManageAdmin></AdminRoute>
       },
       {
-        path:'PartnersApplication',
-        element:<AdminRoute><PartnersApplication></PartnersApplication></AdminRoute>
+        path: 'PartnersApplication',
+        element: <AdminRoute><PartnersApplication></PartnersApplication></AdminRoute>
+      },
+      //
+      {
+        path: 'UpcomingRequests',
+        element: <PartnerRoute><UpcomingRequests></UpcomingRequests></PartnerRoute>
+      },
+      // {
+        // path: 'MyAreaBookingHistory',
+        // element: <PartnerRoute><AllBookingsHistory></AllBookingsHistory></PartnerRoute>
+      // },
+      {
+        path: 'AllBookingsHistory',
+        element: <AdminRoute><AllBookingsHistory></AllBookingsHistory></AdminRoute>
       },
       {
-        path:'UpcomingRequests',
-        element:<AdminRoute><UpcomingRequests></UpcomingRequests></AdminRoute>
-      },
-      {
-        path:'ManageMyApply',
+        path: 'ManageMyApply',
         Component: ManageMyApply
       },
       {
-        path:'ManageMyBooking',
+        path: 'ManageMyBooking',
         Component: ManageMyBooking
       },
       {
-        path:'MyBookingHistory',
+        path: 'MyBookingHistory',
         Component: MyBookingHistory
       },
       {
-        path:'payment-success',
-        Component:PaymentSuccess
+        path: 'payment-success',
+        Component: PaymentSuccess
       },
       {
-        path:'payment-cancelleds',
-        Component:PaymentFaild
+        path: 'payment-cancelleds',
+        Component: PaymentFaild
       }
-  ]
- }
+    ]
+  }
 ]);

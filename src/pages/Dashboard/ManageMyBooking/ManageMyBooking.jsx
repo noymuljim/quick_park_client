@@ -27,8 +27,25 @@ const ManageMyBooking = () => {
             queryClient.invalidateQueries({
                 queryKey: ["my-bookings", user?.email],
             });
+            Swal.fire({
+                icon: "success",
+                title: "Check-in Requested!",
+                text: "Your check-in request has been submitted successfully.please wait for confirmation",
+                confirmButtonText: "OK",
+            });
+        },
+        onError: (error) => {
+            Swal.fire({
+                icon: "error",
+                title: "Check-in Failed!",
+                text:
+                    error.response?.data?.message ||
+                    "Something went wrong. Please try again.",
+                confirmButtonText: "OK",
+            });
         },
     });
+
 
     // Check-out request
     const checkOutMutation = useMutation({
@@ -39,6 +56,22 @@ const ManageMyBooking = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["my-bookings", user?.email],
+            });
+             Swal.fire({
+                icon: "success",
+                title: "Check-out Requested!",
+                text: "Your check-out request has been submitted successfully.please wait for confirmation",
+                confirmButtonText: "OK",
+            });
+        },
+        onError: (error) => {
+            Swal.fire({
+                icon: "error",
+                title: "Check-out Failed!",
+                text:
+                    error.response?.data?.message ||
+                    "Something went wrong. Please try again.",
+                confirmButtonText: "OK",
             });
         },
     });
@@ -61,13 +94,13 @@ const ManageMyBooking = () => {
 
     useEffect(() => {
         const completedBooking = bookings.find((booking) =>
-                booking.status === "complete session" &&
-                !sessionStorage.getItem(`completed-${booking._id}`)
+            booking.status === "complete session" &&
+            !sessionStorage.getItem(`completed-${booking._id}`)
         );
 
         if (!completedBooking) return;
 
-  
+
         sessionStorage.setItem(`completed-${completedBooking._id}`, "true");
 
         Swal.fire({
@@ -185,7 +218,6 @@ const ManageMyBooking = () => {
                                 size={48}
                                 className="mb-3 text-base-content/30"
                             />
-
 
                             <h2 className="text-xl font-bold">
                                 No booking Yet, or booking expired!
