@@ -15,8 +15,9 @@ const Home = () => {
         <div>
             <Banner onSearch={setTarget}></Banner>
             <ParkingSlider></ParkingSlider>
-             <FindParking target={target} />
+            
             <div className="max-w-7xl mx-auto">
+                 <FindParking target={target} />
                
                 <HowWorks />
                 <MobileApp/>
