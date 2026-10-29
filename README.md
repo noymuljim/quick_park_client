@@ -7,3 +7,4 @@
 => tanstack query
 => lottie-react
 => stripe payment
+=> recharts

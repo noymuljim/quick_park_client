@@ -8,14 +8,16 @@ import { FaArrowsLeftRight, FaUserPen } from "react-icons/fa6";
 import { FiHome } from "react-icons/fi";
 import { RiFolderHistoryFill } from "react-icons/ri";
 import { HiSquaresPlus } from "react-icons/hi2";
+import { IoStatsChartSharp } from "react-icons/io5";
 
 
 const DashboardLayout = () => {
     const { role } = useRole();
 
     const linkStyle = ({ isActive }) =>
-        `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200
-        ${isActive
+        `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold
+    transition-all duration-200 tooltip tooltip-right
+    ${isActive
             ? "bg-primary text-black"
             : "text-base-content/70 hover:bg-primary/10 hover:text-primary"
         }`;
@@ -78,7 +80,7 @@ const DashboardLayout = () => {
                             <NavLink
                                 to="/"
                                 end
-                                className={linkStyle}
+                                className={`${linkStyle} tooltip tooltip-right`}
                                 data-tip="Homepage"
                             >
                                 <FiHome className="shrink-0 text-lg" />
@@ -92,7 +94,7 @@ const DashboardLayout = () => {
                         {(role === "partner" || role === "user") && (
                             <li>
                                 <NavLink to="/dashboard/ManageMyApply"
-                                    className={linkStyle}
+                                    className={`${linkStyle} tooltip tooltip-right`}
                                     data-tip="Manage my apply"
                                 >
                                     <FaUserPen className="shrink-0 text-lg" />
@@ -105,9 +107,20 @@ const DashboardLayout = () => {
                         {/* User */}
                         {(role === "user") && (<>
                             <li>
-                                <NavLink to="/dashboard/ManageMyBooking"
+                                <NavLink to="/dashboard/UserOverview"
                                     className={linkStyle}
-                                    data-tip="manage my booking"
+                                    data-tip="userOverview"
+                                >
+
+                                    <IoStatsChartSharp className="shrink-0 text-lg" />
+                                    <span className="is-drawer-close:hidden">
+                                        User overview
+                                    </span>
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/dashboard/ManageMyBooking"
+                                    className={linkStyle} data-tip="manage my booking"
                                 >
                                     <MdBookmarkAdded className="shrink-0 text-lg" />
                                     <span className="is-drawer-close:hidden">
@@ -115,10 +128,10 @@ const DashboardLayout = () => {
                                     </span>
                                 </NavLink>
                             </li>
+
                             <li>
                                 <NavLink to="/dashboard/MyBookingHistory"
-                                    className={linkStyle}
-                                    data-tip="my booking history"
+                                    className={linkStyle} data-tip="my booking history"
                                 >
                                     <RiFolderHistoryFill className="shrink-0 text-lg" />
                                     <span className="is-drawer-close:hidden">
@@ -134,10 +147,19 @@ const DashboardLayout = () => {
                         {role === "partner" && (
                             <>
                                 <li>
+                                    <NavLink to="/dashboard/partnerOverview"
+                                        className={linkStyle} data-tip="partnerOverview"
+                                    >
+                                        <IoStatsChartSharp className="shrink-0 text-lg" />
+                                        <span className="is-drawer-close:hidden">
+                                            Partner overview
+                                        </span>
+                                    </NavLink>
+                                </li>
+                                <li>
                                     <NavLink
                                         to="/dashboard/UpcomingRequests"
-                                        className={linkStyle}
-                                        data-tip="Upcoming request"
+                                        className={linkStyle} data-tip="Upcoming request"
                                     >
 
 
@@ -155,10 +177,19 @@ const DashboardLayout = () => {
                         {role === "admin" && (
                             <>
                                 <li>
+                                    <NavLink to="/dashboard/AdminOverview"
+                                        className={linkStyle} data-tip="adminOverview"
+                                    >
+                                        <IoStatsChartSharp className="shrink-0 text-lg" />
+                                        <span className="is-drawer-close:hidden">
+                                            Admin overview
+                                        </span>
+                                    </NavLink>
+                                </li>
+                                <li>
                                     <NavLink
                                         to="/dashboard/manageAdmin"
-                                        className={linkStyle}
-                                        data-tip="Manage admin"
+                                        className={linkStyle} data-tip="Manage admin"
                                     >
                                         <MdVerifiedUser className="shrink-0 text-lg" />
                                         <span className="is-drawer-close:hidden">
@@ -170,8 +201,7 @@ const DashboardLayout = () => {
                                 <li>
                                     <NavLink
                                         to="/dashboard/PartnersApplication"
-                                        className={linkStyle}
-                                        data-tip="Partners application"
+                                        className={linkStyle} data-tip="Partners application"
                                     >
                                         <FaRegHandshake className="shrink-0 text-lg" />
                                         <span className="is-drawer-close:hidden">
@@ -182,8 +212,7 @@ const DashboardLayout = () => {
                                 <li>
                                     <NavLink
                                         to="/dashboard/AllBookingsHistory"
-                                        className={linkStyle}
-                                        data-tip="All Bookings History"
+                                        className={linkStyle} data-tip="All Bookings History"
                                     >
                                         <HiSquaresPlus className="shrink-0 text-lg" />
                                         <span className="is-drawer-close:hidden">

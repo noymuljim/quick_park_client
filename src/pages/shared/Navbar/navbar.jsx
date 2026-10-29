@@ -1,110 +1,109 @@
 import { Link, NavLink } from "react-router";
 import Logo from "../../../components/logo/Logo";
 import useAuth from "../../../Hooks/useAuth";
-import userLogo from "../../../assets/u.jpg"
+import userLogo from "../../../assets/u.jpg";
+import { IoMenu } from "react-icons/io5";
+import { FiLogOut, FiLayout } from "react-icons/fi";
 
 const Navbar = () => {
     const { user, LogOut } = useAuth();
+
     const handleLogout = () => {
         LogOut()
-            .then(result => {
-                console.log(result.user);
-            })
-            .catch(error => {
-                console.log(error)
-            })
-    }
+            .then((result) => console.log(result.user))
+            .catch((error) => console.log(error));
+    };
 
+    const closeMenu = () => document.activeElement?.blur();
 
+    const linkClass = ({ isActive }) =>
+        `flex items-center gap-2 rounded-full px-5 py-2.5 text-sm text-secondary bg-base-100 font-semibold transition-all duration-300 ${
+            isActive
+                ? "bg-amber-500 text-black shadow-md shadow-amber-500/20"
+                : "text-base-content/80 hover:bg-base-content/10 hover:text-base-content"
+        }`;
 
-    const links = <>
+    const links = (
+        <li>
+            <NavLink
+                to="/dashboard"
+                end
+                onClick={closeMenu}
+                className={linkClass}
+            >
+                <FiLayout size={16} />
+                Dashboard
+            </NavLink>
+        </li>
+    );
 
-        <li><NavLink to="/dashboard" className="border-2 border-amber-500 rounded-xl">Dashboard</NavLink></li>
-
-    </>
     return (
-        <div className="navbar bg-base-100 shadow-sm">
-            <section className="mx-auto flex w-full max-w-7xl items-center">
+        <header className="pointer-events-none sticky top-0 z-[2000] -mb-20 w-full px-3 pt-3 sm:px-5 sm:pt-4">
+            <nav className="pointer-events-auto mx-auto flex w-full max-w-7xl items-center justify-between rounded-full  bg-black/20 px-3 py-3 text-white shadow-none backdrop-blur-md sm:px-6">
 
-                {/* Left - Logo + Mobile Menu */}
-                <div className="navbar-start">
-                    <div className="dropdown">
-                        <div
-                            tabIndex={0}
-                            role="button"
-                            className="btn btn-ghost lg:hidden"
-                        >
-                            <svg
-                                aria-label="Menu"
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
+            
+                <div className="flex items-center gap-2">
+                    {user && (
+                        <div className="dropdown dropdown-bottom lg:hidden">
+                            <button
+                                tabIndex={0}
+                                className="btn btn-circle btn-ghost"
+                                aria-label="Open navigation menu"
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M4 6h16M4 12h8m-8 6h16"
-                                />
-                            </svg>
-                        </div>
+                                <IoMenu size={23} />
+                            </button>
 
-                        <ul
-                            tabIndex={-1}
-                            className="menu menu-sm dropdown-content z-1 mt-3 w-52 rounded-box bg-base-100 p-2 shadow"
-                        >
-                            {links}
-                        </ul>
-                    </div>
+                            <ul
+                                tabIndex={-1}
+                                className="menu dropdown-content z-50 mt-3 w-56 rounded-2xl border border-base-content/10 bg-base-100 p-3 text-base-content shadow-xl"
+                            >
+                                {links}
+                            </ul>
+                        </div>
+                    )}
 
                     <Logo />
                 </div>
 
+               
+                <div className="flex items-center gap-2 sm:gap-3">
+                    {user ? (
+                        <>
+                            <ul className="menu menu-horizontal hidden p-0 lg:flex">
+                                {links}
+                            </ul>
 
+                            <div className="hidden h-8 w-px bg-base-content/15 sm:block" />
 
+                            <button
+                                onClick={handleLogout}
+                                className="group flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-bold text-black transition-all duration-300 hover:bg-amber-400 hover:shadow-lg hover:shadow-amber-500/20 sm:px-5"
+                            >
+                                <FiLogOut size={16} />
+                                <span>Log Out</span>
+                            </button>
 
-                <div className="navbar-end">
-
-                    {
-                        user ? (
-                            <div className="flex items-center gap-3">
-
-                                <div className="hidden lg:flex">
-                                    <ul className="menu menu-horizontal px-1">
-                                        {links}
-                                    </ul>
-                                </div>
-                                {/* Logout Button */}
-                                <button onClick={handleLogout} className="btn bg-amber-500 rounded-xl rounded-3xl
-">
-                                    Log Out
-                                </button>
-                                {/* User Image */}
-                                <div className="w-9 h-9 border-2 border-gray-300
-                             rounded-full overflow-hidden">
+                            <div className="rounded-full bg-gradient-to-br from-amber-400 to-orange-500 p-0.5">
+                                <div className="h-9 w-9 overflow-hidden rounded-full bg-base-200">
                                     <img
-                                        src={user.photoURL ? user.photoURL : userLogo}
-                                        className="w-full h-full object-cover"
+                                        src={user.photoURL || userLogo}
+                                        alt="User profile"
+                                        className="h-full w-full object-cover"
                                     />
                                 </div>
                             </div>
-                        ) : (
-
-                            <div className="flex items-center">
-
-                                <Link to="/login" className="btn bg-amber-500 rounded-xl rounded-3xl
-">
-                                    Log in
-                                </Link>
-                            </div>
-                        )
-                    }
+                        </>
+                    ) : (
+                        <Link
+                            to="/login"
+                            className="flex items-center gap-2 rounded-full bg-amber-500 px-5 py-2.5 text-sm font-bold text-black transition-all duration-300 hover:bg-amber-400 hover:shadow-lg hover:shadow-amber-500/20"
+                        >
+                            Log in
+                        </Link>
+                    )}
                 </div>
-
-            </section>
-        </div>
+            </nav>
+        </header>
     );
 };
 

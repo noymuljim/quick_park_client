@@ -195,14 +195,26 @@ const ManageMyBooking = () => {
 
     //payment
     const handlePayment = async (bookingId) => {
-        const res = await axiosSecure.post("/create-checkout-session", { bookingId });
+    try {
+        const res = await axiosSecure.post("/create-checkout-session", {
+            bookingId,
+        });
 
         if (res.data.success) {
             window.location.href = res.data.url;
         } else {
-            alert(res.data.message);
+            Swal.fire("Payment Failed", res.data.message, "error");
         }
-    };
+    } catch (error) {
+        console.log("Payment error:", error.response?.data);
+
+        Swal.fire(
+            "Payment Failed",
+            error.response?.data?.message || error.message,
+            "error"
+        );
+    }
+};
     if (isLoading) {
         return <Loading />;
     }

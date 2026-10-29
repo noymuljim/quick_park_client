@@ -382,7 +382,7 @@ const FindParking = ({ target: externalTarget }) => {
                                 <button
                                     type="submit"
                                     disabled={loading || !query.trim()}
-                                    className="shrink-0 rounded-xl bg-primary px-5 py-3 font-semibold text-white transition hover:bg-orange-500 disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="shrink-0 rounded-xl bg-primary px-5 py-3 font-semibold text-white transition hover:bg-orange-500 disabled:cursor-not-allowed "
                                 >
                                     Search
                                 </button>
