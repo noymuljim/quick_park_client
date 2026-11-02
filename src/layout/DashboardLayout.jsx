@@ -2,12 +2,11 @@
 import { NavLink, Outlet } from "react-router";
 import useRole from "../Hooks/useRole";
 import L from "../assets/logo.png"
-import { MdBookmarkAdded, MdVerifiedUser } from "react-icons/md";
+import { MdAutoDelete, MdBookmarkAdded, MdVerifiedUser } from "react-icons/md";
 import { FaPlusCircle, FaRegHandshake } from "react-icons/fa";
 import { FaArrowsLeftRight, FaUserPen } from "react-icons/fa6";
 import { FiHome } from "react-icons/fi";
 import { RiFolderHistoryFill } from "react-icons/ri";
-import { HiSquaresPlus } from "react-icons/hi2";
 import { IoStatsChartSharp } from "react-icons/io5";
 
 
@@ -99,25 +98,14 @@ const DashboardLayout = () => {
                                 >
                                     <FaUserPen className="shrink-0 text-lg" />
                                     <span className="is-drawer-close:hidden">
-                                        Manage my apply
+                                        Manage my Lot
                                     </span>
                                 </NavLink>
                             </li>
                         )}
                         {/* User */}
                         {(role === "user") && (<>
-                            <li>
-                                <NavLink to="/dashboard/UserOverview"
-                                    className={linkStyle}
-                                    data-tip="userOverview"
-                                >
-
-                                    <IoStatsChartSharp className="shrink-0 text-lg" />
-                                    <span className="is-drawer-close:hidden">
-                                        User overview
-                                    </span>
-                                </NavLink>
-                            </li>
+                          
                             <li>
                                 <NavLink to="/dashboard/ManageMyBooking"
                                     className={linkStyle} data-tip="manage my booking"
@@ -135,7 +123,7 @@ const DashboardLayout = () => {
                                 >
                                     <RiFolderHistoryFill className="shrink-0 text-lg" />
                                     <span className="is-drawer-close:hidden">
-                                        My booking history
+                                       History
                                     </span>
                                 </NavLink>
 
@@ -187,6 +175,18 @@ const DashboardLayout = () => {
                                     </NavLink>
                                 </li>
                                 <li>
+                                    <NavLink to="/dashboard/ManageDisableReq"
+                                        className={linkStyle} data-tip="ManageDisableReq"
+                                    >
+                                 
+
+                                        <MdAutoDelete className="shrink-0 text-lg" />
+                                        <span className="is-drawer-close:hidden">
+                                            Manage Disable Lot
+                                        </span>
+                                    </NavLink>
+                                </li>
+                                <li>
                                     <NavLink
                                         to="/dashboard/manageAdmin"
                                         className={linkStyle} data-tip="Manage admin"
@@ -209,18 +209,7 @@ const DashboardLayout = () => {
                                         </span>
                                     </NavLink>
                                 </li>
-                                <li>
-                                    <NavLink
-                                        to="/dashboard/AllBookingsHistory"
-                                        className={linkStyle} data-tip="All Bookings History"
-                                    >
-                                        <HiSquaresPlus className="shrink-0 text-lg" />
-                                        <span className="is-drawer-close:hidden">
-                                            All bookings history
-                                        </span>
-                                    </NavLink>
-                                </li>
-
+                                
                             </>
                         )}
 

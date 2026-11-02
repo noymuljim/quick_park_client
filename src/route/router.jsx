@@ -19,12 +19,10 @@ import PaymentFaild from "../pages/BookNow/PaymentFaild";
 import ManageMyBooking from "../pages/Dashboard/ManageMyBooking/ManageMyBooking";
 import UpcomingRequests from "../pages/Dashboard/Admin/UpcomingRequests/UpcomingRequests";
 import MyBookingHistory from "../pages/Dashboard/MyBookingHistory/MyBookingHistory";
-import AllBookingsHistory from "../pages/Dashboard/Admin/AllBookingsHistory/AllBookingsHistory";
 import PartnerRoute from "./PartnerRoute";
-import UserRoute from "./UserRoute";
-import UserOverview from "../pages/Dashboard/DashboardHome/UserOverview";
 import AdminOverview from "../pages/Dashboard/DashboardHome/AdminOverview";
 import PartnerOverview from "../pages/Dashboard/DashboardHome/PartnerOverview";
+import ManageDisableReq from "../pages/Dashboard/Admin/ManageDisableReq/ManageDisableReq";
 
 
 export const router = createBrowserRouter([
@@ -87,26 +85,20 @@ export const router = createBrowserRouter([
         path: 'PartnersApplication',
         element: <AdminRoute><PartnersApplication></PartnersApplication></AdminRoute>
       },
-      //
+
       {
         path: 'UpcomingRequests',
         element: <PartnerRoute><UpcomingRequests></UpcomingRequests></PartnerRoute>
       },
-      // {
-        // path: 'MyAreaBookingHistory',
-        // element: <PartnerRoute><AllBookingsHistory></AllBookingsHistory></PartnerRoute>
-      // },
-      {
-        path: 'AllBookingsHistory',
-        element: <AdminRoute><AllBookingsHistory></AllBookingsHistory></AdminRoute>
-      },
-      {
-        path:'userOverview',
-        element:<UserRoute><UserOverview></UserOverview></UserRoute>
-      },
+     
+    
       {
         path:'adminOverview',
         element:<AdminRoute><AdminOverview></AdminOverview></AdminRoute>
+      },
+      {
+        path:'ManageDisableReq',
+        element:<AdminRoute><ManageDisableReq></ManageDisableReq></AdminRoute>
       },
       {
         path:'partnerOverview',

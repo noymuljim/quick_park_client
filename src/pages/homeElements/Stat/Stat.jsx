@@ -20,8 +20,10 @@ const Stat = () => {
         <div className="bg-secondary py-10 flex text-center ">
 
             <div className="flex-1 border-r-2 border-primary">
+                
                 <h1 className="text-primary font-bold text-6xl">{stats.totalActiveUsers}</h1>
                 <p className="text-primary ">Total users</p>
+                
             </div>
             <div  className="flex-1">
                 <h1 className="text-primary font-bold text-6xl">{stats.totalTrustedPartners}</h1>

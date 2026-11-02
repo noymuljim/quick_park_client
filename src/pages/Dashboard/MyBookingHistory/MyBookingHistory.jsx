@@ -4,6 +4,7 @@ import useAuth from "../../../Hooks/useAuth";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Loading from "../../../components/Loading/Loading";
 
+
 const MyBookingHistory = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
@@ -36,7 +37,7 @@ const MyBookingHistory = () => {
     return (
         <div className="min-h-screen bg-base-200/40 p-4 md:p-8">
             <h1 className="mb-2 text-3xl font-bold">
-               My Booking History
+                My Booking History & reviews
             </h1>
 
             <p className="mb-6 text-base-content/60">
@@ -66,6 +67,7 @@ const MyBookingHistory = () => {
                                 <th>Total Amount</th>
                                 <th>Payment</th>
                                 <th>Status</th>
+                                
                             </tr>
                         </thead>
 
@@ -82,8 +84,8 @@ const MyBookingHistory = () => {
                                 const duration =
                                     start && end && end >= start
                                         ? Math.ceil(
-                                              (end - start) / (1000 * 60)
-                                          )
+                                            (end - start) / (1000 * 60)
+                                        )
                                         : 0;
 
                                 const price = Number(
@@ -120,19 +122,18 @@ const MyBookingHistory = () => {
 
                                         <td>
                                             <span
-                                                className={`badge badge-sm ${
-                                                    booking.paymentStatus === "paid"
+                                                className={`badge badge-sm ${booking.paymentStatus === "paid"
                                                         ? "badge-success"
                                                         : "badge-warning"
-                                                }`}
+                                                    }`}
                                             >
                                                 {booking.paymentStatus || "unpaid"}
                                             </span>
                                         </td>
 
                                         <td>
-                                            <span className="badge badge-ghost badge-sm">
-                                                {booking.status || "N/A"}
+                                            <span >
+                                              {booking.status}
                                             </span>
                                         </td>
                                     </tr>

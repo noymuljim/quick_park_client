@@ -1,18 +1,19 @@
 
-import { useQuery } from "@tanstack/react-query";
-import {FiMail,FiPhone,FiMapPin,FiCalendar,FiClock,FiCheckCircle,FiXCircle} from "react-icons/fi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { FiMail, FiPhone, FiMapPin, FiCalendar, FiClock, FiCheckCircle, FiXCircle, FiPower } from "react-icons/fi";
 import { FaCarSide, FaMotorcycle } from "react-icons/fa";
 
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Loading from "../../../components/Loading/Loading";
 import { Link } from "react-router";
+import Swal from "sweetalert2";
 
 const ManageMyApply = () => {
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
 
-    const {data: myApplication = [],isLoading} = useQuery({
+    const { data: myApplication = [], isLoading } = useQuery({
         queryKey: ["myApplication", user?.email],
         enabled: !!user?.email,
         queryFn: async () => {
@@ -54,6 +55,50 @@ const ManageMyApply = () => {
                 return <FiClock />;
         }
     };
+
+    // disable
+    const queryClient = useQueryClient();
+
+    const disableRequestMutation = useMutation({
+        mutationFn: async (id) => {
+            const res = await axiosSecure.patch(`/application/disable-request/${id}?email=${encodeURIComponent(user.email)}`);
+            return res.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["myApplication", user?.email],
+            });
+
+            Swal.fire({
+                icon: "success",
+                title: "Request Submitted",
+                text: "Your parking lot disable request has been sent to admin.",
+            });
+        },
+        onError: (error) => {
+            Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: error.response?.data?.message || "Something went wrong",
+            });
+        },
+    });
+
+    const handleDisableRequest = (id) => {
+        Swal.fire({
+            title: "Disable Parking Lot?",
+            text: "Your parking lot will be hidden from users after admin approval. Existing booking history will remain same",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Send Request",
+            confirmButtonColor: "#d97706",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                disableRequestMutation.mutate(id);
+            }
+        });
+    };
+
 
     return (
         <div className="min-h-screen bg-base-100 p-4 md:p-8">
@@ -186,12 +231,32 @@ const ManageMyApply = () => {
                                                 </span>
                                             </td>
 
-                                            {/* Delete */}
-                                            {/* <td className="px-6 py-5">
-                                                <button className="btn">
-                                                    delet
-                                                </button>
-                                            </td> */}
+                                            {/* disable */}
+                                            {/* Action */}
+                                            <td className="px-6 py-5">
+                                                {a.status === "approved" && a.lotStatus !== "disabled" ? (
+                                                    a.disableRequest === "pending" ? (
+                                                        <span className="badge badge-warning badge-outline whitespace-nowrap">
+                                                            Request Pending
+                                                        </span>
+                                                    ) : (
+                                                        <button
+                                                            onClick={() => handleDisableRequest(a._id)}
+                                                            disabled={disableRequestMutation.isPending}
+                                                            className="btn btn-sm rounded-lg text-warning hover:bg-warning hover:text-white"
+                                                        >
+                                                            <FiPower />
+                                                            Disable Lot
+                                                        </button>
+                                                    )
+                                                ) : a.lotStatus === "disabled" ? (
+                                                    <span className="badge badge-error badge-outline">
+                                                        Disabled
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-sm text-base-content/40">—</span>
+                                                )}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
