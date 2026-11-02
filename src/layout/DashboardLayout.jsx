@@ -116,6 +116,16 @@ const DashboardLayout = () => {
                                     </span>
                                 </NavLink>
                             </li>
+                            <li>
+                                <NavLink to="/dashboard/userOverview"
+                                    className={linkStyle} data-tip="user Overview"
+                                >
+                                    <IoStatsChartSharp className="shrink-0 text-lg" />
+                                    <span className="is-drawer-close:hidden">
+                                      User overview
+                                    </span>
+                                </NavLink>
+                            </li>
 
                             <li>
                                 <NavLink to="/dashboard/MyBookingHistory"

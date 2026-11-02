@@ -57,7 +57,7 @@ const ManageMyBooking = () => {
             queryClient.invalidateQueries({
                 queryKey: ["my-bookings", user?.email],
             });
-             Swal.fire({
+            Swal.fire({
                 icon: "success",
                 title: "Check-out Requested!",
                 text: "Your check-out request has been submitted successfully.please wait for confirmation",
@@ -195,26 +195,26 @@ const ManageMyBooking = () => {
 
     //payment
     const handlePayment = async (bookingId) => {
-    try {
-        const res = await axiosSecure.post("/create-checkout-session", {
-            bookingId,
-        });
+        try {
+            const res = await axiosSecure.post("/create-checkout-session", {
+                bookingId,
+            });
 
-        if (res.data.success) {
-            window.location.href = res.data.url;
-        } else {
-            Swal.fire("Payment Failed", res.data.message, "error");
+            if (res.data.success) {
+                window.location.href = res.data.url;
+            } else {
+                Swal.fire("Payment Failed", res.data.message, "error");
+            }
+        } catch (error) {
+            console.log("Payment error:", error.response?.data);
+
+            Swal.fire(
+                "Payment Failed",
+                error.response?.data?.message || error.message,
+                "error"
+            );
         }
-    } catch (error) {
-        console.log("Payment error:", error.response?.data);
-
-        Swal.fire(
-            "Payment Failed",
-            error.response?.data?.message || error.message,
-            "error"
-        );
-    }
-};
+    };
     if (isLoading) {
         return <Loading />;
     }
@@ -588,6 +588,7 @@ const ManageMyBooking = () => {
                                                 </button>
                                             )}
 
+                                        <div className="my-45 border-t-2 border-dotted border-secondary"></div>
                                     </div>
                                 </div>
                             );

@@ -18,8 +18,9 @@ const DashboardHome = () => {
         return<PartnerOverview></PartnerOverview>
     }
     else{
-        return<UserOverview></UserOverview>
+        return <UserOverview></UserOverview>
     }
+   
 };
 
 export default DashboardHome;
