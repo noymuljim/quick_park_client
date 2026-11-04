@@ -25,6 +25,7 @@ import PartnerOverview from "../pages/Dashboard/DashboardHome/PartnerOverview";
 import ManageDisableReq from "../pages/Dashboard/Admin/ManageDisableReq/ManageDisableReq";
 import UserRoute from "./UserRoute";
 import UserOverview from "../pages/Dashboard/DashboardHome/UserOverview";
+import Profile from "../pages/Dashboard/Profile/Profile";
 
 
 export const router = createBrowserRouter([
@@ -82,6 +83,10 @@ export const router = createBrowserRouter([
       {
         path: 'manageAdmin',
         element: <AdminRoute><ManageAdmin></ManageAdmin></AdminRoute>
+      },
+      {
+        path: 'Profile',
+        element: <Profile></Profile>
       },
       {
         path: 'PartnersApplication',

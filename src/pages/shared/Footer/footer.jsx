@@ -1,47 +1,116 @@
+import { Link } from "react-router";
+import { FaGithub, FaLinkedinIn } from "react-icons/fa";
 
-const footer = () => {
+const socialClass =
+    "w-10 h-10 rounded-full border border-neutral-content/15 bg-neutral-content/5 flex items-center justify-center transition duration-300 hover:-translate-y-1 hover:border-secondary hover:bg-secondary hover:text-secondary-content hover:shadow-lg hover:shadow-secondary/30";
+
+
+const Footer = () => {
     return (
-       <footer className="footer sm:footer-horizontal bg-base-200 text-base-content p-10">
-  <aside>
-    <svg
-      width="50"
-      height="50"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      fillRule="evenodd"
-      clipRule="evenodd"
-      className="fill-current">
-      <path
-        d="M22.672 15.226l-2.432.811.841 2.515c.33 1.019-.209 2.127-1.23 2.456-1.15.325-2.148-.321-2.463-1.226l-.84-2.518-5.013 1.677.84 2.517c.391 1.203-.434 2.542-1.831 2.542-.88 0-1.601-.564-1.86-1.314l-.842-2.516-2.431.809c-1.135.328-2.145-.317-2.463-1.229-.329-1.018.211-2.127 1.231-2.456l2.432-.809-1.621-4.823-2.432.808c-1.355.384-2.558-.59-2.558-1.839 0-.817.509-1.582 1.327-1.846l2.433-.809-.842-2.515c-.33-1.02.211-2.129 1.232-2.458 1.02-.329 2.13.209 2.461 1.229l.842 2.515 5.011-1.677-.839-2.517c-.403-1.238.484-2.553 1.843-2.553.819 0 1.585.509 1.85 1.326l.841 2.517 2.431-.81c1.02-.33 2.131.211 2.461 1.229.332 1.018-.21 2.126-1.23 2.456l-2.433.809 1.622 4.823 2.433-.809c1.242-.401 2.557.484 2.557 1.838 0 .819-.51 1.583-1.328 1.847m-8.992-6.428l-5.01 1.675 1.619 4.828 5.011-1.674-1.62-4.829z"></path>
-    </svg>
-    <p>
-      ACME Industries Ltd.
-      <br />
-      Providing reliable tech since 1992
-    </p>
-  </aside>
-  <nav>
-    <h6 className="footer-title">Services</h6>
-    <a className="link link-hover">Branding</a>
-    <a className="link link-hover">Design</a>
-    <a className="link link-hover">Marketing</a>
-    <a className="link link-hover">Advertisement</a>
-  </nav>
-  <nav>
-    <h6 className="footer-title">Company</h6>
-    <a className="link link-hover">About us</a>
-    <a className="link link-hover">Contact</a>
-    <a className="link link-hover">Jobs</a>
-    <a className="link link-hover">Press kit</a>
-  </nav>
-  <nav>
-    <h6 className="footer-title">Legal</h6>
-    <a className="link link-hover">Terms of use</a>
-    <a className="link link-hover">Privacy policy</a>
-    <a className="link link-hover">Cookie policy</a>
-  </nav>
-</footer>
+        <footer className="relative overflow-hidden bg-neutral text-white ">
+            {/* Top accent line */}
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
+
+            <div className="relative max-w-7xl mx-auto px-6 pt-16 pb-6">
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+
+                    {/* Brand */}
+                    <div className="flex flex-col items-center">
+                        <h1 className="text-white font-bold text-2xl flex items-center justify-center gap-3">
+
+                            Quick Park
+                        </h1>
+
+                        <p className="mt-5 text-sm opacity-70 leading-7 max-w-xs">
+                            Smart parking made simple. Find, book and manage
+                            your space without hassle.
+                        </p>
+
+                        <div className="flex justify-center gap-3 mt-7">
+
+                            <a
+                                href="https://linkedin.com/in/noymul-matin-jim-7a119332a"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="LinkedIn"
+                                className={`${socialClass} group`}
+                            >
+                                <FaLinkedinIn className="transition-colors duration-300 group-hover:text-blue-500" />
+                            </a>
+
+                            <a
+                                href="https://github.com/noymuljim"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Github"
+                                className={`${socialClass} group`}
+                            >
+                                <FaGithub className="transition-colors duration-300 group-hover:text-black" />
+                            </a>
+
+                        </div>
+                    </div>
+
+                    {/* Quick Links */}
+                    <div className="flex flex-col ">
+                        <h2 className="font-semibold text-lg mb-6 flex flex-col  gap-2">
+                            Quick Links
+                        </h2>
+
+                        <div className="flex flex-col  gap-4 text-sm">
+                            {[
+                                { to: "/", label: "Home" },
+                                { to: "/becomePartner", label: "Become Partner" },
+                                { to: "/dashboard", label: "Dashboard" },
+                            ].map((link) => (
+                                <Link
+                                    key={link.to}
+                                    to={link.to}
+                                    className="opacity-70 transition duration-300 hover:-translate-y-0.5 hover:text-secondary hover:opacity-100"
+                                >
+                                    {link.label}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Contact */}
+                    <div className="flex flex-col items-center">
+                        <h2 className="font-semibold text-lg mb-6 flex flex-col items-center gap-2">
+                            Get in Touch
+                        </h2>
+
+                        <div className="flex flex-col items-center gap-4 text-sm">
+                            <p className="opacity-80">
+
+                                Dhaka, Bangladesh
+                            </p>
+
+                            <p className=" opacity-80">
+
+                                noymulmatinjim@gmail.com
+                            </p>
+
+                            <p className=" opacity-80">
+
+                                01912863484
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                {/* Bottom */}
+                <div className="mt-14 border-t border-neutral-content/10 pt-6">
+                    <p className="text-center text-sm opacity-60">
+                        © {new Date().getFullYear()} Quick Park. All rights reserved.
+                    </p>
+                </div>
+
+            </div>
+        </footer>
     );
 };
 
-export default footer;
+export default Footer;

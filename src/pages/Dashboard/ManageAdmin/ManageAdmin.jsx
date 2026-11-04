@@ -144,7 +144,6 @@ const ManageAdmin = () => {
                                     <th className="px-6 py-4 font-semibold">Email</th>
                                     <th className="px-6 py-4 font-semibold">Role</th>
                                     <th className="px-6 py-4 font-semibold">Make as Admin</th>
-                                    <th className="px-6 py-4 font-semibold">Other Actions</th>
                                 </tr>
                             </thead>
 
@@ -225,9 +224,7 @@ const ManageAdmin = () => {
                                                 )}
                                             </td>
 
-                                            <td className="px-6 py-5">
-                                                {/* Other actions go here */}
-                                            </td>
+                                           
                                         </tr>
                                     ))
                                 ) : (

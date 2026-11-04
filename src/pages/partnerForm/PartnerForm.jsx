@@ -210,7 +210,7 @@ const PartnerForm = () => {
 
                 <div className="mb-10 text-center">
 
-                    <h1 className="text-3xl font-bold text-secondary md:text-4xl">
+                    <h1 className="text-3xl font-bold text-secondary md:text-4xl mt-20">
 
                         List Your Parking Lot
 

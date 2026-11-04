@@ -62,7 +62,7 @@ const Navbar = () => {
                         </div>
                     )}
 
-                    <Logo />
+                   <NavLink to="/"> <Logo /></NavLink>
                 </div>
 
                
