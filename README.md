@@ -9,7 +9,7 @@ pass> aaaAAA1!
 
 ## Problem I Wanted to Solve
 
-Finding a parking space in busy areas can be time-consuming. Drivers often struggle to find suitable parking locations and get information about pricing. On the other hand, many parking space owners don't have an easy way to promote or manage their available spaces.
+Finding a parking space in busy areas can be time consuming. Drivers often struggle to find suitable parking locations and get information about pricing. On the other hand, many parking space owners don't have an easy way to promote or manage their available spaces.
 
 I wanted to solve these problems by bringing both drivers and parking owners together on one platform.
 
@@ -24,7 +24,7 @@ With Quick Park, drivers can explore parking locations, check details and pricin
 - **For Admins:** Manage users, control user roles, and approve or reject partner applications.
 - **Authentication:** Firebase Authentication with Google Sign-In and protected routes.
 - **Payment:** Stripe integration with payment verification.
-- **Parking Search:** Location-based parking discovery with map integration.
+- **Parking Search:** Location based parking discovery with map integration.
 
 ## Technology Stack
 
@@ -47,7 +47,7 @@ With Quick Park, drivers can explore parking locations, check details and pricin
 - Secure administrative operations.
 - Payment verification on the backend.
 
-## 🚀 Future Improvements
+## Future Improvements
 
 - Real-time parking space availability.
 - Advanced parking recommendations with AI.
@@ -57,3 +57,6 @@ With Quick Park, drivers can explore parking locations, check details and pricin
 **Jim** — Full-Stack Developer
 
 **Live Project:** https://quick-park-2f5a4.web.app/
+Login with:
+admin> admin@gmail.com 
+pass> aaaAAA1!
