@@ -1,4 +1,6 @@
 # Quick Park — Smart Parking Management Platform
+admin> admin@gmail.com 
+pass> aaaAAA1!
 
 🔗 **Live Website:** https://quick-park-2f5a4.web.app/
 
